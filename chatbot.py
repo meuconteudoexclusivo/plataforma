@@ -121,11 +121,11 @@ class Config:
     # Conteúdo de mídia
     AUDIO_FILE = "https://github.com/meuconteudoexclusivo/plataforma/raw/refs/heads/main/assets/assets_audio_paloma_audio.mp3"
     AUDIO_DURATION = 7
-    IMG_PROFILE = "https://i.ibb.co/ks5CNrDn/IMG-9256.jpg"
+    IMG_PROFILE = "https://i.ibb.co/tjMGWjT/foto2.jpg"
     IMG_GALLERY = [
-        "https://i.ibb.co/zhNZL4FF/IMG-9198.jpg",
-        "https://i.ibb.co/Y4B7CbXf/IMG-9202.jpg",
-        "https://i.ibb.co/Fqf0gPPq/IMG-9199.jpg"
+        "https://i.ibb.co/Ndjk8YpZ/foto1.jpg",
+        "https://i.ibb.co/v6cD2TMC/foto3.jpg",
+        "https://i.ibb.co/TBWSjkPW/foto4.jpg"
     ]
     IMG_HOME_PREVIEWS = [
         "https://i.ibb.co/k2MJg4XC/Save-ClipApp-412457343-378531441368078-7870326395110089440-n.jpg",
