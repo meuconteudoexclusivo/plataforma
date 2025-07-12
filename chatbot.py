@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO DE PÁGINA IRRESISTÍVEL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Nicole Saheb Premium VIP – Acesse o Inédito!",
+    page_title="Nicole Saheb Premium VIP – Acesso Restrito!",
     page_icon="💖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -85,13 +85,13 @@ st.markdown("""
         border: 1px solid #FF66B3 !important; /* Borda rosa vibrante */
         border-radius: 25px; /* Bordas arredondadas */
         padding: 8px 15px;
-        color: #F8F8F8; /* Cor do texto digitado */
+        color: #FFFFFF; /* Cor do texto digitado */
     }
     div[data-testid="stChatInput"] > label > div {
         color: #FF66B3; /* Cor do texto do label (placeholder) */
     }
     div[data-testid="stChatInput"] > div > div > input {
-        color: #F8F8F8 !important; /* Cor do texto digitado */
+        color: #FFFFFF !important; /* Cor do texto digitado */
     }
 </style>
 """, unsafe_allow_html=True)
@@ -321,16 +321,16 @@ class CTAEngine:
         elif any(v in user_input_lower for v in ["video", "videos", "transar", "masturbar", "gemendo", "gozando", "safadeza"]):
             return {
                 "text": random.choice([
-                    "Meus vídeos são para os mais audaciosos. Você aguenta a verdade da minha intimidade filmada? É só pro VIP! 😈",
-                    "Já me gravei fazendo coisas que você só sonha... Que tal ter acesso a tudo isso agora? O tempo está correndo! 🔥",
+                    "Meus vídeos são para os mais audaciosos. Você aguenta a verdade da minha intimidade filmada? 😈",
+                    "Já me gravei fazendo coisas que você só sonha... 🔥",
                 ]),
                 "cta": {"show": True, "label": "Liberar Vídeos Chocantes! 🔞", "target": "offers"}
             }
         else:
             return {
                 "text": random.choice([
-                    "Eu guardo segredos que só mostro para quem realmente sabe o que quer. Você é um deles? 😉",
-                    "Minha intimidade está pulsando, esperando você liberar o acesso total. O que você está esperando para se render? 💖",
+                    "Eu guardo segredos que só mostro para quem realmente sabe o que quer. 😉",
+                    "Minha intimidade está pulsando, esperando você liberar o acesso total. 💖",
                 ]),
                 "cta": {"show": True, "label": "Descobrir o Segredo da Nicole! 🔐", "target": "offers"}
             }
