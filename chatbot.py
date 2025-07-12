@@ -44,8 +44,12 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: linear-gradient(135deg, #FFE6F2 0%, #FFB6D9 50%, #FF66B3 100%) !important;
-    color: #5A0032 !important;
+        background: linear-gradient(
+        135deg, 
+        #1A0033 0%,  # Roxo escuro (base)
+        #3D0066 100%  # Roxo vibrante (contraste com rosa)
+    ) !important;
+    color: #FFB3D9 !important;  # Rosa claro (texto legível)
 }
     }
     /* Estilos globais para botões de CTA primários - Ouro e Rosa/Roxo */
