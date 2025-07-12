@@ -107,7 +107,7 @@ class Config:
     API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
     # Links de Checkout - Projetados para a conversão máxima
-    CHECKOUT_START = "https://pay.risepay.com.br/Pay/f360613093db4f19ac8bd373791ebf4c"
+    CHECKOUT_START = "https://pay.risepay.com.br/Pay/34a7832016d641658d11e6193ef412a1"
     CHECKOUT_PREMIUM = "https://pay.risepay.com.br/Pay/94e264761df54c49b46ee7d16b97959f"
     CHECKOUT_EXTREME = "https://pay.risepay.com.br/Pay/f360613093db4f19ac8bd373791ebf4c"
     CHECKOUT_VIP_1MES = "https://checkout.exemplo.com/vip-1mes-irresistivel"
