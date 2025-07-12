@@ -44,54 +44,83 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: linear-gradient(180deg, #1A0033 0%, #3D0066 100%); /* Fundo degradê vibrante do roxo escuro ao roxo mais claro */
-        color: #F8F8F8; /* Cor do texto principal, quase branco */
+        background: linear-gradient(180deg, #0F0020 0%, #2D0050 100%) !important; /* Fundo mais escuro e vibrante */
+        color: #FFFFFF !important;
     }
-    /* Estilos globais para botões de CTA primários - Ouro e Rosa/Roxo */
+    /* Estilos globais para botões de CTA primários - Degradê mais intenso */
     div.stButton > button:first-child {
-        background: linear-gradient(90deg, #FFD700, #FF66B3, #9933FF) !important; /* Degradê do ouro ao rosa e roxo */
-        color: #1A0033 !important; /* Texto em roxo escuro para contraste no ouro */
+        background: linear-gradient(90deg, #FFD700 0%, #FF3399 50%, #CC00FF 100%) !important;
+        color: #FFFFFF !important;
         border: none !important;
-        border-radius: 30px !important; /* Mais arredondado, convidativo */
+        border-radius: 30px !important;
         padding: 12px 30px !important;
         font-weight: bold !important;
         font-size: 1.1em !important;
         transition: all 0.3s ease-in-out !important;
-        box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4) !important; /* Sombra dourada */
+        box-shadow: 0 6px 20px rgba(255, 51, 153, 0.6) !important;
         cursor: pointer;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
     div.stButton > button:first-child:hover {
-        transform: translateY(-3px) scale(1.02) !important;
-        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.6) !important; /* Sombra dourada mais intensa */
-        filter: brightness(1.1);
+        transform: translateY(-3px) scale(1.05) !important;
+        box-shadow: 0 12px 25px rgba(255, 51, 153, 0.8) !important;
+        filter: brightness(1.15);
     }
-    /* Estilos para botões secundários - tons de rosa/roxo mais suaves */
+    /* Estilos para botões secundários - mais contrastantes */
     .stButton button {
-        background: rgba(255, 102, 179, 0.15) !important; /* Tom mais suave de rosa transparente */
-        color: #FF66B3 !important; /* Cor do texto rosa vibrante */
-        border: 1px solid #FF66B3 !important;
+        background: rgba(255, 20, 147, 0.2) !important;
+        color: #FF66FF !important;
+        border: 1px solid #FF00FF !important;
         transition: all 0.3s ease-in-out !important;
         border-radius: 10px !important;
         padding: 8px 15px !important;
     }
     .stButton button:hover {
-        background: rgba(255, 102, 179, 0.3) !important;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(255, 102, 179, 0.3) !important;
+        background: rgba(255, 20, 147, 0.4) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 0, 255, 0.4) !important;
     }
-    /* Estilo para input de chat - Elegante e discreto */
+    /* Estilo para input de chat - Mais destacado */
     div[data-testid="stChatInput"] {
-        background: rgba(255, 102, 179, 0.08) !important; /* Fundo levemente rosado transparente */
-        border: 1px solid #FF66B3 !important; /* Borda rosa vibrante */
-        border-radius: 25px; /* Bordas arredondadas */
-        padding: 8px 15px;
-        color: #F8F8F8; /* Cor do texto digitado */
+        background: rgba(255, 20, 147, 0.15) !important;
+        border: 2px solid #FF00FF !important;
+        border-radius: 25px;
+        padding: 10px 20px;
+        color: #FFFFFF;
     }
     div[data-testid="stChatInput"] > label > div {
-        color: #FF66B3; /* Cor do texto do label (placeholder) */
+        color: #FF66FF !important;
+        font-weight: bold;
     }
     div[data-testid="stChatInput"] > div > div > input {
-        color: #F8F8F8 !important; /* Cor do texto digitado */
+        color: #FFFFFF !important;
+    }
+    /* Efeitos neon para elementos importantes */
+    .neon-text {
+        text-shadow: 0 0 5px #FF00FF, 0 0 10px #FF00FF, 0 0 15px #FF00FF;
+        animation: flicker 1.5s infinite alternate;
+    }
+    @keyframes flicker {
+        0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+            text-shadow: 0 0 5px #FF00FF, 0 0 10px #FF00FF, 0 0 15px #FF00FF;
+        }
+        20%, 24%, 55% {
+            text-shadow: none;
+        }
+    }
+    /* Melhorias na sidebar */
+    .sidebar-header {
+        background: linear-gradient(135deg, #1A0033, #3D0066);
+        border: 2px solid #FF00FF;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
+    }
+    /* Efeitos hover nas imagens */
+    img:hover {
+        transform: scale(1.02);
+        transition: transform 0.3s ease;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -437,8 +466,8 @@ class UiService:
     @staticmethod
     def get_chat_audio_player():
         return f"""
-        <div style="background: linear-gradient(45deg, #FF66B3, #FF1493); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(255, 20, 147, 0.3);">
-            <audio controls style="width:100%; height:35px; filter: invert(0.9) sepia(1) saturate(7) hue-rotate(300deg);">
+        <div style="background: linear-gradient(45deg, #FF00CC, #FF0066); border-radius: 18px; padding: 12px; margin: 8px 0; box-shadow: 0 6px 15px rgba(255, 0, 153, 0.5);">
+            <audio controls style="width:100%; height:40px; filter: invert(0.9) sepia(1) saturate(10) hue-rotate(290deg);">
                 <source src="{Config.AUDIO_FILE}" type="audio/mp3">
             </audio>
         </div>
@@ -450,11 +479,11 @@ class UiService:
         ATENDIDA_DELAY = 2
         call_container = st.empty()
         call_container.markdown("""
-        <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #FF0066; text-align: center; color: white; animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);">
-            <div style="font-size: 3.5rem; color: #FF66B3;">💖</div>
-            <h3 style="color: #FF66B3; margin-bottom: 10px; font-size: 1.8em;">Conectando com Paloma...</h3>
+        <div style="background: linear-gradient(135deg, #0F0020, #2D0050); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.7); border: 3px solid #FF00FF; text-align: center; color: white; animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);">
+            <div style="font-size: 3.5rem; color: #FF00FF; text-shadow: 0 0 10px #FF00FF;">💖</div>
+            <h3 style="color: #FF00FF; margin-bottom: 10px; font-size: 1.8em; text-shadow: 0 0 5px #FF00FF;">Conectando com Paloma...</h3>
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;">
-                <div style="width: 12px; height: 12px; background: #00FF7F; border-radius: 50%; box-shadow: 0 0 8px #00FF7F;"></div>
+                <div style="width: 12px; height: 12px; background: #00FF88; border-radius: 50%; box-shadow: 0 0 12px #00FF88;"></div>
                 <span style="font-size: 1.1rem; font-weight: bold;">Paloma Online - Te esperando! 🔥</span>
             </div>
         </div>
@@ -462,9 +491,9 @@ class UiService:
         """, unsafe_allow_html=True)
         time.sleep(LIGANDO_DELAY)
         call_container.markdown("""
-        <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #00FF7F; text-align: center; color: white; animation: fadeIn 1s forwards;">
-            <div style="font-size: 3.5rem; color: #00FF7F;">✓</div>
-            <h3 style="color: #00FF7F; margin-bottom: 10px; font-size: 1.8em;">Chamada Atendida! 🎉</h3>
+        <div style="background: linear-gradient(135deg, #0F0020, #2D0050); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.7); border: 3px solid #00FF88; text-align: center; color: white; animation: fadeIn 1s forwards;">
+            <div style="font-size: 3.5rem; color: #00FF88; text-shadow: 0 0 10px #00FF88;">✓</div>
+            <h3 style="color: #00FF88; margin-bottom: 10px; font-size: 1.8em; text-shadow: 0 0 5px #00FF88;">Chamada Atendida! 🎉</h3>
             <p style="font-size: 1.1rem; margin:0; font-weight: bold;">Paloma está ansiosa por você...</p>
         </div>
         <style> @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } </style>
@@ -482,13 +511,22 @@ class UiService:
         while time.time() - start_time < duration:
             if status_type == "typing":
                 dots = "." * (int((time.time() - start_time) * 3) % 4)
-            container.markdown(f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; font-style: italic;">{message}{dots}</div>', unsafe_allow_html=True)
+            container.markdown(f'<div style="color: #FF00FF; font-size: 0.9em; padding: 6px 15px; border-radius: 15px; background: rgba(255, 0, 255, 0.15); display: inline-block; margin-left: 15px; font-style: italic; box-shadow: 0 2px 8px rgba(255, 0, 255, 0.3);">{message}{dots}</div>', unsafe_allow_html=True)
             time.sleep(0.2)
         container.empty()
 
     @staticmethod
     def age_verification():
-        st.markdown('<div class="age-verification"><div class="age-header"><div class="age-icon">🔞</div><h1 class="age-title">ENTRE APENAS SE FOR ADULTO!</h1></div><div class="age-content"><p>Este portal é reservado <strong>apenas para maiores de 18 anos.</strong></p><p>Ao clicar abaixo, você declara que possui a idade mínima exigida.</p></div></div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #0F0020, #2D0050); border: 3px solid #FF00FF; border-radius: 20px; padding: 40px; text-align: center; max-width: 600px; margin: 50px auto; box-shadow: 0 15px 40px rgba(255, 0, 255, 0.3);">
+            <div style="font-size: 4rem; color: #FF00FF; text-shadow: 0 0 10px #FF00FF; margin-bottom: 20px;">🔞</div>
+            <h1 style="color: #FF00FF; text-shadow: 0 0 5px #FF00FF; font-size: 2.2em; margin-bottom: 20px;">ENTRE APENAS SE FOR ADULTO!</h1>
+            <div style="font-size: 1.2em; margin-bottom: 30px;">
+                <p>Este portal é reservado <strong style="color: #FF00FF;">apenas para maiores de 18 anos.</strong></p>
+                <p>Ao clicar abaixo, você declara que possui a idade mínima exigida.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             if st.button("Sim, tenho mais de 18 anos e QUERO ENTRAR! 💖", key="age_confirm_button", use_container_width=True, type="primary"):
@@ -499,8 +537,8 @@ class UiService:
     @staticmethod
     def setup_sidebar():
         with st.sidebar:
-            st.markdown(f'<div class="sidebar-logo-container"><img src="{Config.LOGO_URL}" class="sidebar-logo" alt="Logo"></div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Paloma"><h3 style="color: #FF66B3; margin-top: 15px;">Paloma Premium VIP</h3><p style="font-size: 0.9em; color: #FFB3D9;">Sua musa particular...</p></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center; margin-bottom: 20px;"><img src="{Config.LOGO_URL}" style="max-width: 80%; border-radius: 10px; border: 2px solid #FF00FF; box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);"></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background: linear-gradient(135deg, #0F0020, #2D0050); border: 2px solid #FF00FF; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);"><img src="{Config.IMG_PROFILE}" style="width: 100%; border-radius: 10px; border: 2px solid #FF00FF; margin-bottom: 15px;"><h3 style="color: #FF00FF; margin-top: 0; text-shadow: 0 0 5px #FF00FF;">Paloma Premium VIP</h3><p style="font-size: 0.9em; color: #FFB3FF;">Sua musa particular...</p></div>', unsafe_allow_html=True)
             st.markdown("---")
             menu_options = {"Início Quente": "home", "Minha Galeria Privada": "gallery", "Chat Íntimo": "chat", "Ofertas Exclusivas": "offers"}
             for option, page in menu_options.items():
@@ -510,7 +548,7 @@ class UiService:
                         save_persistent_data()
                         st.rerun()
             st.markdown("---")
-            st.markdown(f'<div style="background: rgba(255, 20, 147, 0.15); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #FF66B3;"><p style="margin:0; color: #FFB3D9;">Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p><progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:8px;"></progress></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background: rgba(255, 0, 255, 0.2); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #FF00FF; box-shadow: 0 5px 15px rgba(255, 0, 255, 0.2);"><p style="margin:0; color: #FFB3FF; font-weight: bold;">Mensagens hoje: <strong style="color: #FF00FF;">{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p><progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:10px; border-radius: 5px; background: #1A0033;"></progress></div>', unsafe_allow_html=True)
             if st.button("QUERO SER VIP AGORA!", use_container_width=True, type="primary", key="sidebar_cta_button"):
                 st.session_state.current_page = "offers"
                 save_persistent_data()
@@ -518,19 +556,19 @@ class UiService:
 
     @staticmethod
     def show_gallery_page():
-        st.markdown('<h3>MINHA GALERIA: UM BANQUETE PARA SEUS OLHOS! 😈</h3>', unsafe_allow_html=True)
-        st.markdown('<p>Apenas um vislumbre do que te espera... o acesso completo está te chamando.</p>', unsafe_allow_html=True)
+        st.markdown('<h3 style="color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">MINHA GALERIA: UM BANQUETE PARA SEUS OLHOS! 😈</h3>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #FFB3FF;">Apenas um vislumbre do que te espera... o acesso completo está te chamando.</p>', unsafe_allow_html=True)
         cols = st.columns(3)
         for idx, col in enumerate(cols):
             with col:
-                st.markdown(f'<div style="position: relative; border-radius: 15px; overflow: hidden;"><img src="{Config.IMG_GALLERY[idx]}" style="width:100%; filter: blur(8px) brightness(0.6);"><div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 1.6em; text-shadow: 0 0 12px #000;">🔥 VIP Bloqueado 🔥</div></div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);"><img src="{Config.IMG_GALLERY[idx]}" style="width:100%; filter: blur(8px) brightness(0.6);"><div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 1.6em; text-shadow: 0 0 10px #000; text-align: center;">🔥 VIP Bloqueado 🔥<br><span style="font-size: 0.8em;">(Clique para liberar)</span></div></div>', unsafe_allow_html=True)
         if st.button("Liberar Minha Galeria VIP AGORA! 🔓", key="vip_button_gallery", use_container_width=True, type="primary"):
             st.session_state.current_page = "offers"
             st.rerun()
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #FF66B3;">Seu Chat Exclusivo com Paloma 💖</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="text-align: center; color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">Seu Chat Exclusivo com Paloma 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -543,9 +581,9 @@ class NewPages:
     @staticmethod
     def show_home_page():
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1A0033, #3D0066); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #FF0066;">
-            <h1 style="color: #FF66B3; font-size: 3.5em;">Paloma Premium VIP 💖</h1>
-            <p style="font-size: 1.4em;">Descubra o prazer ilimitado. Conteúdo quente, exclusivo e sem censura.</p>
+        <div style="background: linear-gradient(135deg, #0F0020, #2D0050); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #FF00FF; box-shadow: 0 15px 40px rgba(255, 0, 255, 0.3);">
+            <h1 style="color: #FF00FF; font-size: 3.5em; text-shadow: 0 0 10px #FF00FF;">Paloma Premium VIP 💖</h1>
+            <p style="font-size: 1.4em; color: #FFB3FF;">Descubra o prazer ilimitado. Conteúdo quente, exclusivo e sem censura.</p>
         </div>
         """, unsafe_allow_html=True)
         cols = st.columns(3)
@@ -559,13 +597,13 @@ class NewPages:
 
     @staticmethod
     def show_offers_page():
-        st.markdown('<div class="offers-header"><h2>ESCOLHA SEU CAMINHO PARA O PRAZER! 😈</h2><p>Qual pacote te fará delirar?</p></div>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; margin-bottom: 30px;"><h2 style="color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">ESCOLHA SEU CAMINHO PARA O PRAZER! 😈</h2><p style="color: #FFB3FF;">Qual pacote te fará delirar?</p></div>', unsafe_allow_html=True)
         
         # Pacotes
         cols = st.columns(3)
         packages = [
-            {"name": "INICIAÇÃO 🔥", "price": "R$ 49,90", "color": "#FF66B3", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
-            {"name": "DELÍRIO VIP 💜", "price": "R$ 99,90", "color": "#9933FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
+            {"name": "INICIAÇÃO 🔥", "price": "R$ 49,90", "color": "#FF3399", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
+            {"name": "DELÍRIO VIP 💜", "price": "R$ 99,90", "color": "#CC00FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
             {"name": "OBSESSÃO 😈", "price": "R$ 199,90", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
         ]
 
@@ -573,23 +611,24 @@ class NewPages:
             with col:
                 pkg = packages[i]
                 st.markdown(f"""
-                <div class="package-box" style="border-color: {pkg['color']};">
-                    <div class="package-header">
-                        <h3 style="color: {pkg['color']};">{pkg['name']}</h3>
-                        <div class="package-price" style="color: {pkg['color']};">{pkg['price']}</div>
+                <div style="background: linear-gradient(135deg, #0F0020, #2D0050); border: 3px solid {pkg['color']}; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba({int(pkg['color'][1:3])}, {int(pkg['color'][3:5])}, {int(pkg['color'][5:7])}, 0.3);">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="color: {pkg['color']}; text-shadow: 0 0 5px {pkg['color']}; margin-bottom: 5px;">{pkg['name']}</h3>
+                        <div style="font-size: 1.8em; color: {pkg['color']}; font-weight: bold; margin-bottom: 15px;">{pkg['price']}</div>
                     </div>
-                    <ul class="package-benefits">
-                        {''.join([f'<li>✔ {feat}</li>' for feat in pkg['features']])}
+                    <ul style="padding-left: 20px; margin-bottom: 25px; color: #FFB3FF;">
+                        {''.join([f'<li style="margin-bottom: 8px;">✔ {feat}</li>' for feat in pkg['features']])}
                     </ul>
-                    <a href="{pkg['link']}" target="_blank" style="display:block; background:{pkg['color']}; color:white; text-align:center; padding:12px; border-radius:10px; text-decoration:none; font-weight:bold; margin-top: 20px;">EU QUERO!</a>
+                    <a href="{pkg['link']}" target="_blank" style="display:block; background: {pkg['color']}; color:white; text-align:center; padding:12px; border-radius:10px; text-decoration:none; font-weight:bold; margin-top: 20px; transition: all 0.3s; box-shadow: 0 4px 10px rgba({int(pkg['color'][1:3])}, {int(pkg['color'][3:5])}, {int(pkg['color'][5:7])}, 0.4);">EU QUERO!</a>
                 </div>
                 """, unsafe_allow_html=True)
         
         # Countdown
         st.markdown("""
-        <div class="countdown-container">
-            <h3>🚨 OFERTA RELÂMPAGO! 🚨</h3>
-            <div id="countdown">23:59:59</div>
+        <div style="background: linear-gradient(135deg, #0F0020, #2D0050); border: 3px solid #FF0066; border-radius: 15px; padding: 20px; text-align: center; margin-top: 30px; box-shadow: 0 10px 20px rgba(255, 0, 102, 0.3);">
+            <h3 style="color: #FF0066; text-shadow: 0 0 5px #FF0066; margin-bottom: 15px;">🚨 OFERTA RELÂMPAGO! 🚨</h3>
+            <div id="countdown" style="font-size: 2em; font-weight: bold; color: #FF00FF; text-shadow: 0 0 10px #FF00FF; margin: 10px 0;">23:59:59</div>
+            <p style="color: #FFB3FF; margin-bottom: 0;">Esta oferta expira em breve! Não perca!</p>
         </div>
         """, unsafe_allow_html=True)
         st.components.v1.html("""
@@ -740,7 +779,7 @@ def main():
     if not st.session_state.chat_started and st.session_state.current_page == 'chat':
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #FF0066;"><h2 style="color: #FF66B3;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #FF00FF; box-shadow: 0 0 20px #FF00FF;"><h2 style="color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
             if st.button("COMEÇAR A CONVERSAR COM PALOMA AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
                 st.session_state.update({'chat_started': True, 'current_page': 'chat', 'audio_sent': False})
                 save_persistent_data()
