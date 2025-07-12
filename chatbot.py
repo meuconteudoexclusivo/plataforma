@@ -128,9 +128,9 @@ class Config:
         "https://i.ibb.co/TBWSjkPW/foto4.jpg"
     ]
     IMG_HOME_PREVIEWS = [
-        "https://i.ibb.co/k2MJg4XC/Save-ClipApp-412457343-378531441368078-7870326395110089440-n.jpg",
-        "https://i.ibb.co/MxqKBk1X/Save-ClipApp-481825770-18486618637042608-2702272791254832108-n.jpg",
-        "https://i.ibb.co/F4CkkYTL/Save-ClipApp-461241348-1219420546053727-2357827070610318448-n.jpg"
+        "https://i.ibb.co/Ndjk8YpZ/foto1.jpg",
+        "https://i.ibb.co/v6cD2TMC/foto3.jpg",
+        "https://i.ibb.co/TBWSjkPW/foto4.jpg"
     ]
     LOGO_URL = "https://i.ibb.co/LX7x3tcB/Logo-Golden-Pepper-Letreiro-1.png"
 
