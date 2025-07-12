@@ -44,8 +44,8 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: #FFFFFF !important; /* Fundo branco sólido */
-    color: #333333 !important; /* Cor do texto alterada para preto/dark para melhor contraste */
+        background: linear-gradient(135deg, #FFE6F2 0%, #FFB6D9 50%, #FF66B3 100%) !important;
+    color: #5A0032 !important;
 }
     }
     /* Estilos globais para botões de CTA primários - Ouro e Rosa/Roxo */
