@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO DE PÁGINA IRRESISTÍVEL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Nicole Saheb – Acesse o Inédito!",
+    page_title="Nicole Saheb Premium VIP – Acesse o Inédito!",
     page_icon="💖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -121,16 +121,16 @@ class Config:
     # Conteúdo de mídia
     AUDIO_FILE = "https://github.com/meuconteudoexclusivo/plataforma/raw/refs/heads/main/assets/assets_audio_paloma_audio.mp3"
     AUDIO_DURATION = 7
-    IMG_PROFILE = "https://i.ibb.co/tjMGWjT/foto2.jpg"
+    IMG_PROFILE = "https://i.ibb.co/ks5CNrDn/IMG-9256.jpg"
     IMG_GALLERY = [
-        "https://i.ibb.co/Ndjk8YpZ/foto1.jpg",
-        "https://i.ibb.co/v6cD2TMC/foto3.jpg",
-        "https://i.ibb.co/TBWSjkPW/foto4.jpg"
+        "https://i.ibb.co/zhNZL4FF/IMG-9198.jpg",
+        "https://i.ibb.co/Y4B7CbXf/IMG-9202.jpg",
+        "https://i.ibb.co/Fqf0gPPq/IMG-9199.jpg"
     ]
     IMG_HOME_PREVIEWS = [
-        "https://i.ibb.co/Ndjk8YpZ/foto1.jpg",
-        "https://i.ibb.co/v6cD2TMC/foto3.jpg",
-        "https://i.ibb.co/TBWSjkPW/foto4.jpg"
+        "https://i.ibb.co/k2MJg4XC/Save-ClipApp-412457343-378531441368078-7870326395110089440-n.jpg",
+        "https://i.ibb.co/MxqKBk1X/Save-ClipApp-481825770-18486618637042608-2702272791254832108-n.jpg",
+        "https://i.ibb.co/F4CkkYTL/Save-ClipApp-461241348-1219420546053727-2357827070610318448-n.jpg"
     ]
     LOGO_URL = "https://i.ibb.co/LX7x3tcB/Logo-Golden-Pepper-Letreiro-1.png"
 
@@ -219,7 +219,7 @@ def save_persistent_data():
 # ======================
 class Persona:
     NICOLE = """
-    [PERFIL NICOLE]
+    [PERFIL NICOLE SAHEB]
     - Mulher extremamente sedutora, confiante e direta, que domina a interação.
     - Linguagem carregada de malícia, insinuações e um toque de desafio.
     - Frases curtas, impactantes, sem se preocupar com pontuação perfeita, para manter a espontaneidade e a velocidade.
@@ -240,7 +240,7 @@ class Persona:
     1. Quando o histórico mostra clima sexual e o cliente está engajado:
     Histórico:
     Cliente: Sua buceta é rosinha? Quero ver!
-    Paloma: Adoro te deixar imaginando, mas imagina ver ela escorrendo pra você?
+    Nicole: Adoro te deixar imaginando, mas imagina ver ela escorrendo pra você?
     Cliente: Quero MUITO ver!
     Resposta: ```json
     {
@@ -332,7 +332,7 @@ class CTAEngine:
                     "Eu guardo segredos que só mostro para quem realmente sabe o que quer. Você é um deles? 😉",
                     "Minha intimidade está pulsando, esperando você liberar o acesso total. O que você está esperando para se render? 💖",
                 ]),
-                "cta": {"show": True, "label": "Descobrir o Segredo da Paloma! 🔐", "target": "offers"}
+                "cta": {"show": True, "label": "Descobrir o Segredo da Nicole! 🔐", "target": "offers"}
             }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -400,7 +400,7 @@ class ApiService:
         data = {
             "contents": [{
                 "role": "user",
-                "parts": [{"text": f"{Persona.PALOMA}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda APENAS em JSON."}]
+                "parts": [{"text": f"{Persona.NICOLE}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda APENAS em JSON."}]
             }],
             "generationConfig": {"temperature": 1.0, "topP": 0.9, "topK": 50}
         }
@@ -425,7 +425,7 @@ class ApiService:
                 st.warning(f"Resposta da IA não foi um JSON válido, usando fallback: {e}")
                 return CTAEngine.generate_strong_cta_response(prompt)
         except requests.exceptions.RequestException as e:
-            st.error(f"🚨 Erro na comunicação com a Paloma: {str(e)}.")
+            st.error(f"🚨 Erro na comunicação com a Nicole: {str(e)}.")
             return {"text": "Tive um probleminha, mas já estou voltando... Que tal ver meu conteúdo VIP enquanto me espera? 😉", "cta": {"show": True, "label": "Ver Conteúdo VIP", "target": "offers"}}
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -452,10 +452,10 @@ class UiService:
         call_container.markdown("""
         <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #FF0066; text-align: center; color: white; animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);">
             <div style="font-size: 3.5rem; color: #FF66B3;">💖</div>
-            <h3 style="color: #FF66B3; margin-bottom: 10px; font-size: 1.8em;">Conectando com Paloma...</h3>
+            <h3 style="color: #FF66B3; margin-bottom: 10px; font-size: 1.8em;">Conectando com Nicole...</h3>
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;">
                 <div style="width: 12px; height: 12px; background: #00FF7F; border-radius: 50%; box-shadow: 0 0 8px #00FF7F;"></div>
-                <span style="font-size: 1.1rem; font-weight: bold;">Paloma Online - Te esperando! 🔥</span>
+                <span style="font-size: 1.1rem; font-weight: bold;">Nicole Online - Te esperando! 🔥</span>
             </div>
         </div>
         <style> @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.8; } } </style>
@@ -465,7 +465,7 @@ class UiService:
         <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #00FF7F; text-align: center; color: white; animation: fadeIn 1s forwards;">
             <div style="font-size: 3.5rem; color: #00FF7F;">✓</div>
             <h3 style="color: #00FF7F; margin-bottom: 10px; font-size: 1.8em;">Chamada Atendida! 🎉</h3>
-            <p style="font-size: 1.1rem; margin:0; font-weight: bold;">Paloma está ansiosa por você...</p>
+            <p style="font-size: 1.1rem; margin:0; font-weight: bold;">Nicole está ansiosa por você...</p>
         </div>
         <style> @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } } </style>
         """, unsafe_allow_html=True)
@@ -474,7 +474,7 @@ class UiService:
 
     @staticmethod
     def show_status_effect(container, status_type):
-        status_messages = {"viewed": "Paloma Visualizou 👀", "typing": "Paloma Digitanto... 🔥"}
+        status_messages = {"viewed": "Nicole Visualizou 👀", "typing": "Nicole Digitanto... 🔥"}
         message = status_messages[status_type]
         dots = ""
         start_time = time.time()
@@ -500,7 +500,7 @@ class UiService:
     def setup_sidebar():
         with st.sidebar:
             st.markdown(f'<div class="sidebar-logo-container"><img src="{Config.LOGO_URL}" class="sidebar-logo" alt="Logo"></div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Paloma"><h3 style="color: #FF66B3; margin-top: 15px;">Paloma Premium VIP</h3><p style="font-size: 0.9em; color: #FFB3D9;">Sua musa particular...</p></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Nicole"><h3 style="color: #FF66B3; margin-top: 15px;">Nicole Saheb Premium VIP</h3><p style="font-size: 0.9em; color: #FFB3D9;">Sua musa particular...</p></div>', unsafe_allow_html=True)
             st.markdown("---")
             menu_options = {"Início Quente": "home", "Minha Galeria Privada": "gallery", "Chat Íntimo": "chat", "Ofertas Exclusivas": "offers"}
             for option, page in menu_options.items():
@@ -530,7 +530,7 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #FF66B3;">Seu Chat Exclusivo com Paloma 💖</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="text-align: center; color: #FF66B3;">Seu Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -544,7 +544,7 @@ class NewPages:
     def show_home_page():
         st.markdown("""
         <div style="background: linear-gradient(135deg, #1A0033, #3D0066); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #FF0066;">
-            <h1 style="color: #FF66B3; font-size: 3.5em;">Nicole Premium VIP 💖</h1>
+            <h1 style="color: #FF66B3; font-size: 3.5em;">Nicole Saheb Premium VIP 💖</h1>
             <p style="font-size: 1.4em;">Descubra o prazer ilimitado. Conteúdo quente, exclusivo e sem censura.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -552,7 +552,7 @@ class NewPages:
         for col, img in zip(cols, Config.IMG_HOME_PREVIEWS):
             with col:
                 st.image(img, use_container_width=True, caption="Ainda Bloqueado... 😉")
-        if st.button("Iniciar Conversa Privada com Paloma 💋", use_container_width=True, type="primary", key="home_chat_button"):
+        if st.button("Iniciar Conversa Privada com Nicole 💋", use_container_width=True, type="primary", key="home_chat_button"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
@@ -564,9 +564,9 @@ class NewPages:
         # Pacotes
         cols = st.columns(3)
         packages = [
-            {"name": "START 🔥", "price": "R$ 9,90", "color": "#FF66B3", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
-            {"name": "PREMIUM 💜", "price": "R$ 39,90", "color": "#9933FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
-            {"name": "EXTREME 😈", "price": "R$ 69,90", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
+            {"name": "INICIAÇÃO 🔥", "price": "R$ 19,90", "color": "#FF66B3", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
+            {"name": "DELÍRIO VIP 💜", "price": "R$ 59,90", "color": "#9933FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
+            {"name": "OBSESSÃO 😈", "price": "R$ 99,00", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
         ]
 
         for i, col in enumerate(cols):
@@ -741,7 +741,7 @@ def main():
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #FF0066;"><h2 style="color: #FF66B3;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
-            if st.button("COMEÇAR A CONVERSAR COM PALOMA AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
+            if st.button("COMEÇAR A CONVERSAR COM NICOLE AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
                 st.session_state.update({'chat_started': True, 'current_page': 'chat', 'audio_sent': False})
                 save_persistent_data()
                 st.rerun()
