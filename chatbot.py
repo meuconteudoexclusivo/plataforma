@@ -272,11 +272,11 @@ class CTAEngine:
     @staticmethod
     def should_show_cta(conversation_history: list) -> bool:
         """Decide inteligentemente quando apresentar um CTA, com lógica mais agressiva."""
-        if len(conversation_history) < 4:
+        if len(conversation_history) < 15:
             return False
-        if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 0:
+        if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 50:
             elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 120:
+            if elapsed < 180:
                 return False
         last_msgs = []
         for msg in conversation_history[-7:]:
@@ -302,9 +302,9 @@ class CTAEngine:
             "como ter acesso", "onde vejo mais", "libera", "qual o preço", "quanto é",
             "eu quero", "me dá"
         ]
-        hot_count = sum(3 for word in hot_words if word in context)
+        hot_count = sum(7 for word in hot_words if word in context)
         has_direct_ask = any(ask in context for ask in direct_asks)
-        return (hot_count >= 3) or has_direct_ask
+        return (hot_count >= 8) or has_direct_ask
 
     @staticmethod
     def generate_strong_cta_response(user_input: str) -> dict:
