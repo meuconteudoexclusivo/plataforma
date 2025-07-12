@@ -44,8 +44,9 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: linear-gradient(180deg, #1A0033 0%, #3D0066 100%); /* Fundo degradê vibrante do roxo escuro ao roxo mais claro */
-        color: #F8F8F8; /* Cor do texto principal, quase branco */
+        background: #FFFFFF !important; /* Fundo branco sólido */
+    color: #333333 !important; /* Cor do texto alterada para preto/dark para melhor contraste */
+}
     }
     /* Estilos globais para botões de CTA primários - Ouro e Rosa/Roxo */
     div.stButton > button:first-child {
