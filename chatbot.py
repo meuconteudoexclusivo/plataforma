@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO DE PÁGINA IRRESISTÍVEL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Paloma Premium VIP – Acesse o Inédito!",
+    page_title="Nicole Saheb – Acesse meu conteúdo privado!",
     page_icon="💖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -152,9 +152,9 @@ class Config:
     AUDIO_DURATION = 7
     IMG_PROFILE = "https://i.ibb.co/ks5CNrDn/IMG-9256.jpg"
     IMG_GALLERY = [
-        "https://i.ibb.co/zhNZL4FF/IMG-9198.jpg",
-        "https://i.ibb.co/Y4B7CbXf/IMG-9202.jpg",
-        "https://i.ibb.co/Fqf0gPPq/IMG-9199.jpg"
+        "https://i.ibb.co/cKvLjGMW/foto1.jpg",
+        "https://i.ibb.co/CsSQkdKB/foto2.jpg",
+        "https://i.ibb.co/XfvvRDvr/foto4.jpg"
     ]
     IMG_HOME_PREVIEWS = [
         "https://i.ibb.co/k2MJg4XC/Save-ClipApp-412457343-378531441368078-7870326395110089440-n.jpg",
@@ -247,8 +247,8 @@ def save_persistent_data():
 # MODELOS DE DADOS E ESTRATÉGIAS DE CONVERSÃO AVANÇADAS
 # ======================
 class Persona:
-    PALOMA = """
-    [PERFIL PALOMA]
+    NICOLE = """
+    [PERFIL NICOLE]
     - Mulher extremamente sedutora, confiante e direta, que domina a interação.
     - Linguagem carregada de malícia, insinuações e um toque de desafio.
     - Frases curtas, impactantes, sem se preocupar com pontuação perfeita, para manter a espontaneidade e a velocidade.
@@ -454,7 +454,7 @@ class ApiService:
                 st.warning(f"Resposta da IA não foi um JSON válido, usando fallback: {e}")
                 return CTAEngine.generate_strong_cta_response(prompt)
         except requests.exceptions.RequestException as e:
-            st.error(f"🚨 Erro na comunicação com a Paloma: {str(e)}.")
+            st.error(f"🚨 Erro na comunicação com a Nicole: {str(e)}.")
             return {"text": "Tive um probleminha, mas já estou voltando... Que tal ver meu conteúdo VIP enquanto me espera? 😉", "cta": {"show": True, "label": "Ver Conteúdo VIP", "target": "offers"}}
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -503,7 +503,7 @@ class UiService:
 
     @staticmethod
     def show_status_effect(container, status_type):
-        status_messages = {"viewed": "Paloma Visualizou 👀", "typing": "Paloma Digitanto... 🔥"}
+        status_messages = {"viewed": "Nicole Visualizou 👀", "typing": "Nicole Digitanto... 🔥"}
         message = status_messages[status_type]
         dots = ""
         start_time = time.time()
@@ -568,7 +568,7 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">Seu Chat Exclusivo com Paloma 💖</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="text-align: center; color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">Seu Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -582,7 +582,7 @@ class NewPages:
     def show_home_page():
         st.markdown("""
         <div style="background: linear-gradient(135deg, #0F0020, #2D0050); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #FF00FF; box-shadow: 0 15px 40px rgba(255, 0, 255, 0.3);">
-            <h1 style="color: #FF00FF; font-size: 3.5em; text-shadow: 0 0 10px #FF00FF;">Paloma Premium VIP 💖</h1>
+            <h1 style="color: #FF00FF; font-size: 3.5em; text-shadow: 0 0 10px #FF00FF;">Nicole Saheb VIP 💖</h1>
             <p style="font-size: 1.4em; color: #FFB3FF;">Descubra o prazer ilimitado. Conteúdo quente, exclusivo e sem censura.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -590,7 +590,7 @@ class NewPages:
         for col, img in zip(cols, Config.IMG_HOME_PREVIEWS):
             with col:
                 st.image(img, use_container_width=True, caption="Ainda Bloqueado... 😉")
-        if st.button("Iniciar Conversa Privada com Paloma 💋", use_container_width=True, type="primary", key="home_chat_button"):
+        if st.button("Iniciar Conversa Privada com Nicole 💋", use_container_width=True, type="primary", key="home_chat_button"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
@@ -602,9 +602,9 @@ class NewPages:
         # Pacotes
         cols = st.columns(3)
         packages = [
-            {"name": "INICIAÇÃO 🔥", "price": "R$ 49,90", "color": "#FF3399", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
-            {"name": "DELÍRIO VIP 💜", "price": "R$ 99,90", "color": "#CC00FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
-            {"name": "OBSESSÃO 😈", "price": "R$ 199,90", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
+            {"name": "INICIAÇÃO 🔥", "price": "R$ 19,90", "color": "#FF3399", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
+            {"name": "DELÍRIO VIP 💜", "price": "R$ 59,90", "color": "#CC00FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
+            {"name": "OBSESSÃO 😈", "price": "R$ 99,90", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
         ]
 
         for i, col in enumerate(cols):
@@ -677,7 +677,7 @@ class ChatService:
     def format_conversation_history(messages, max_messages=15):
         formatted = []
         for msg in messages[-max_messages:]:
-            role = "Cliente" if msg["role"] == "user" else "Paloma"
+            role = "Cliente" if msg["role"] == "user" else "Nicole"
             content = msg["content"]
             if content == "[ÁUDIO]":
                 content = "[Enviou um áudio sensual]"
@@ -727,7 +727,7 @@ class ChatService:
             save_persistent_data()
             st.rerun()
 
-        user_input = st.chat_input("Me diga o que você deseja, gatinho... 😉", key="chat_input_main")
+        user_input = st.chat_input("Me diga o que você deseja, amor... 😉", key="chat_input_main")
         
         if user_input:
             cleaned_input = ChatService.validate_input(user_input)
@@ -739,7 +739,7 @@ class ChatService:
 
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             if st.session_state.request_count > Config.MAX_REQUESTS_PER_SESSION:
-                final_offer_message = {"text": "Seu gostinho grátis acabou, gatinho. Para continuar, você precisa ser VIP! 😈", "cta": {"show": True, "label": "QUERO SER VIP AGORA! 💖", "target": "offers"}}
+                final_offer_message = {"text": "Seu gostinho grátis acabou, amor. Para continuar, você precisa ser VIP! 😈", "cta": {"show": True, "label": "QUERO SER VIP AGORA! 💖", "target": "offers"}}
                 st.session_state.messages.append({"role": "assistant", "content": json.dumps(final_offer_message)})
                 DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(final_offer_message))
                 save_persistent_data()
@@ -780,7 +780,7 @@ def main():
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #FF00FF; box-shadow: 0 0 20px #FF00FF;"><h2 style="color: #FF00FF; text-shadow: 0 0 5px #FF00FF;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
-            if st.button("COMEÇAR A CONVERSAR COM PALOMA AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
+            if st.button("COMEÇAR A CONVERSAR COM NICOLE AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
                 st.session_state.update({'chat_started': True, 'current_page': 'chat', 'audio_sent': False})
                 save_persistent_data()
                 st.rerun()
