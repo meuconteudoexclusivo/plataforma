@@ -446,8 +446,8 @@ class UiService:
 
     @staticmethod
     def show_call_effect():
-        LIGANDO_DELAY = 4
-        ATENDIDA_DELAY = 2
+        LIGANDO_DELAY = 2
+        ATENDIDA_DELAY = 1
         call_container = st.empty()
         call_container.markdown("""
         <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #FF0066; text-align: center; color: white; animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);">
@@ -474,11 +474,11 @@ class UiService:
 
     @staticmethod
     def show_status_effect(container, status_type):
-        status_messages = {"viewed": "Nicole Visualizou 👀", "typing": "Nicole Digitanto... 🔥"}
+        status_messages = {"viewed": "Nicole Visualizou 👀", "typing": " Digitanto... 🔥"}
         message = status_messages[status_type]
         dots = ""
         start_time = time.time()
-        duration = 1.8 if status_type == "viewed" else 3.0
+        duration = 1.3 if status_type == "viewed" else 3.0
         while time.time() - start_time < duration:
             if status_type == "typing":
                 dots = "." * (int((time.time() - start_time) * 3) % 4)
@@ -491,7 +491,7 @@ class UiService:
         st.markdown('<div class="age-verification"><div class="age-header"><div class="age-icon">🔞</div><h1 class="age-title">ENTRE APENAS SE FOR ADULTO!</h1></div><div class="age-content"><p>Este portal é reservado <strong>apenas para maiores de 18 anos.</strong></p><p>Ao clicar abaixo, você declara que possui a idade mínima exigida.</p></div></div>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("Sim, tenho mais de 18 anos e QUERO ENTRAR! 💖", key="age_confirm_button", use_container_width=True, type="primary"):
+            if st.button("Sim, tenho mais de 18 anos 💖", key="age_confirm_button", use_container_width=True, type="primary"):
                 st.session_state.age_verified = True
                 save_persistent_data()
                 st.rerun()
