@@ -589,9 +589,9 @@ class NewPages:
         # Pacotes
         cols = st.columns(3)
         packages = [
-            {"name": "START 🔥", "price": "R$ 19,90", "color": "#FF66B3", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
-            {"name": "PREMIUM 💜", "price": "R$ 59,90", "color": "#9933FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
-            {"name": "EXTREME 😈", "price": "R$ 99,00", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
+            {"name": "START 🔥", "price": "R$ 9,90", "color": "#FF66B3", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
+            {"name": "PREMIUM 💜", "price": "R$ 39,90", "color": "#9933FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
+            {"name": "EXTREME 😈", "price": "R$ 69,00", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
         ]
 
         for i, col in enumerate(cols):
