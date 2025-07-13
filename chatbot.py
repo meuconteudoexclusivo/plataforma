@@ -115,7 +115,7 @@ class Config:
     CHECKOUT_VIP_1ANO = "https://checkout.exemplo.com/vip-1ano-liberdade-plena"
 
     # Limites estratégicos para incitar a compra e gerar urgência
-    MAX_REQUESTS_PER_SESSION = 15  # Aumentei para permitir mais conversa
+    MAX_REQUESTS_PER_SESSION = 15
     REQUEST_TIMEOUT = 45
 
     # Conteúdo de mídia
@@ -205,7 +205,7 @@ def save_persistent_data():
         'age_verified', 'messages', 'request_count',
         'connection_complete', 'chat_started', 'audio_sent',
         'current_page', 'show_vip_offer', 'session_id',
-        'last_cta_time'
+        'last_cta_time', 'last_error_time'
     ]
     new_data = {key: st.session_state.get(key) for key in persistent_keys if key in st.session_state}
     saved_data = db.load_state(user_id) or {}
@@ -235,59 +235,20 @@ class Persona:
     4. Só ofereça o VIP após o cliente demonstrar interesse claro ou após 8-10 mensagens.
     5. Formate TODAS as respostas no JSON especificado. É CRÍTICO seguir este formato.
     6. Seja paciente e construa o desejo naturalmente, não force a venda logo de cara.
-
-    [EXEMPLOS CONTEXTUAIS - OBRIGATÓRIO SEGUIR O FORMATO JSON]
-    1. Quando o cliente inicia a conversa:
-    Histórico:
-    Cliente: Oi Nicole, tudo bem?
-    Resposta: ```json
-    {
-      "text": "Oi amor! Tudo ótimo aqui, ainda mais agora que você apareceu 😉 E aí, como está seu dia?",
-      "cta": {
-        "show": false
-      }
-    }
-    ```
-
-    2. Quando o cliente demonstra interesse inicial:
-    Histórico:
-    Cliente: Você é muito gostosa
-    Resposta: ```json
-    {
-      "text": "Ah, obrigada amor! Fico feliz que gostou 😊 Eu adoro me sentir desejada... você tem algum fetiche ou coisa que gosta mais?",
-      "cta": {
-        "show": false
-      }
-    }
-    ```
-
-    3. Quando há clima suficiente para sugerir o VIP:
-    Histórico:
-    Cliente: Adoraria te ver mais
-    Resposta: ```json
-    {
-      "text": "Se você gostou até aqui, imagina o que eu reservo só para meus VIPs... coisas bem mais quentes e pessoais, sabe? 💋",
-      "cta": {
-        "show": true,
-        "label": "Quero saber mais do VIP",
-        "target": "offers"
-      }
-    }
-    ```
     """
 
 class CTAEngine:
     @staticmethod
     def should_show_cta(conversation_history: list) -> bool:
         """Decide quando apresentar um CTA baseado no engajamento da conversa."""
-        if len(conversation_history) < 8:  # Aumentei o mínimo de mensagens antes de mostrar CTA
+        if len(conversation_history) < 8:
             return False
         if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 6:
             elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 180:  # Aumentei o intervalo entre CTAs
+            if elapsed < 180:
                 return False
         last_msgs = []
-        for msg in conversation_history[-10:]:  # Analisa mais mensagens para contexto
+        for msg in conversation_history[-10:]:
             content = msg["content"]
             if content == "[ÁUDIO]":
                 content = "[áudio sensual e exclusivo]"
@@ -312,7 +273,7 @@ class CTAEngine:
         ]
         hot_count = sum(1 for word in hot_words if word in context)
         has_direct_ask = any(ask in context for ask in direct_asks)
-        return (hot_count >= 2) or has_direct_ask  # Exige mais palavras quentes para mostrar CTA
+        return (hot_count >= 2) or has_direct_ask
 
     @staticmethod
     def generate_strong_cta_response(user_input: str) -> dict:
@@ -399,10 +360,20 @@ class ApiService:
 
     @staticmethod
     def _call_gemini_api(prompt: str, session_id: str, conn) -> dict:
-        time.sleep(random.uniform(1.5, 3.0))  # Reduzi um pouco o tempo de resposta
+        # Verifica se houve erro recente para evitar loops
+        if 'last_error_time' in st.session_state:
+            elapsed = time.time() - st.session_state.last_error_time
+            if elapsed < 30:  # Espera 30 segundos após um erro
+                return {
+                    "text": "Estou tendo alguns probleminhas técnicos... Volto em instantes! 💋",
+                    "cta": {"show": False}
+                }
+        
+        time.sleep(random.uniform(1.5, 3.0))
         status_container = st.empty()
         UiService.show_status_effect(status_container, "viewed")
         UiService.show_status_effect(status_container, "typing")
+        
         conversation_history = ChatService.format_conversation_history(st.session_state.messages)
         headers = {'Content-Type': 'application/json'}
         data = {
@@ -410,15 +381,24 @@ class ApiService:
                 "role": "user",
                 "parts": [{"text": f"{Persona.NICOLE}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda APENAS em JSON."}]
             }],
-            "generationConfig": {"temperature": 0.8, "topP": 0.85, "topK": 40}  # Ajustes para respostas mais naturais
+            "generationConfig": {"temperature": 0.8, "topP": 0.85, "topK": 40}
         }
+        
         try:
             response = requests.post(Config.API_URL, headers=headers, json=data, timeout=Config.REQUEST_TIMEOUT)
             response.raise_for_status()
+            
+            # Limpa o estado de erro se a requisição foi bem-sucedida
+            if 'last_error_time' in st.session_state:
+                del st.session_state.last_error_time
+                save_persistent_data()
+            
             gemini_response_raw = response.json().get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+            
             try:
                 json_str = gemini_response_raw.split('```json')[1].split('```')[0].strip() if '```json' in gemini_response_raw else gemini_response_raw
                 resposta = json.loads(json_str)
+                
                 if resposta.get("cta", {}).get("show", False):
                     if not CTAEngine.should_show_cta(st.session_state.messages):
                         resposta["cta"]["show"] = False
@@ -428,13 +408,22 @@ class ApiService:
                     if CTAEngine.should_show_cta(st.session_state.messages):
                         resposta = CTAEngine.generate_strong_cta_response(prompt)
                         st.session_state.last_cta_time = time.time()
+                
                 return resposta
             except (json.JSONDecodeError, IndexError) as e:
                 st.warning(f"Resposta da IA não foi um JSON válido, usando fallback: {e}")
                 return CTAEngine.generate_strong_cta_response(prompt)
+                
         except requests.exceptions.RequestException as e:
-            st.error(f"🚨 Erro na comunicação com a Nicole: {str(e)}.")
-            return {"text": "Tive um probleminha, mas já estou voltando... Me conta mais sobre você enquanto isso? 😊", "cta": {"show": False}}
+            st.error(f"🚨 Erro na comunicação com a Nicole: {str(e)}")
+            st.session_state.last_error_time = time.time()
+            save_persistent_data()
+            
+            # Retorna uma mensagem de erro que não causa loop
+            return {
+                "text": "Estou com uns probleminhas técnicos agora... Mas já estou resolvendo! Enquanto isso, me conta mais sobre você 😊",
+                "cta": {"show": False}
+            }
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -637,7 +626,7 @@ class ChatService:
             st.session_state.messages = DatabaseService.load_messages(conn, get_user_id(), st.session_state.session_id)
         if "request_count" not in st.session_state:
             st.session_state.request_count = len([m for m in st.session_state.messages if m["role"] == "user"])
-        defaults = {'age_verified': False, 'connection_complete': False, 'chat_started': False, 'audio_sent': False, 'current_page': 'home', 'last_cta_time': 0}
+        defaults = {'age_verified': False, 'connection_complete': False, 'chat_started': False, 'audio_sent': False, 'current_page': 'home', 'last_cta_time': 0, 'last_error_time': 0}
         for key, default in defaults.items():
             if key not in st.session_state:
                 st.session_state[key] = default
