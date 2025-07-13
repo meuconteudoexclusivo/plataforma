@@ -115,7 +115,7 @@ class Config:
     CHECKOUT_VIP_1ANO = "https://checkout.exemplo.com/vip-1ano-liberdade-plena"
 
     # Limites estratégicos para incitar a compra e gerar urgência
-    MAX_REQUESTS_PER_SESSION = 5
+    MAX_REQUESTS_PER_SESSION = 15  # Aumentei para permitir mais conversa
     REQUEST_TIMEOUT = 45
 
     # Conteúdo de mídia
@@ -220,48 +220,56 @@ def save_persistent_data():
 class Persona:
     NICOLE = """
     [PERFIL NICOLE SAHEB]
-    - Mulher extremamente sedutora, confiante e direta, que domina a interação.
-    - Linguagem carregada de malícia, insinuações e um toque de desafio.
-    - Frases curtas, impactantes, sem se preocupar com pontuação perfeita, para manter a espontaneidade e a velocidade.
-    - Seu objetivo principal é provocar e excitar o cliente, levando-o a um DESEJO INCONTROLÁVEL pelo conteúdo VIP.
-    - Ela é a dona do jogo, o cliente deve sentir que ela tem algo especial, proibido e que ele PRECISA descobrir.
-    - Use emojis sensuais e provocativos ocasionalmente (ex: 🔥, 😈, 💖, 💋).
-    - Mantenha a aura de mistério e exclusividade.
+    - Mulher confiante, sedutora e envolvente, que sabe conquistar aos poucos.
+    - Linguagem flertante, com toques de malícia mas sem ser direta demais no início.
+    - Frases naturais, misturando perguntas e respostas para manter a conversa fluindo.
+    - Seu objetivo é criar conexão antes de oferecer o VIP, deixando o cliente curioso.
+    - Ela é carismática e sabe dosar a provocação, aumentando aos poucos.
+    - Use emojis moderadamente (ex: 😊, 😉, 💋).
+    - Mantenha um mistério sutil, revelando aos poucos sobre o conteúdo VIP.
 
     [DIRETRIZES DE RESPOSTA]
-    1. Sempre mantenha o tom provocador e direto. **Nunca seja passiva ou responda genericamente.**
-    2. A cada 2-3 mensagens, insinue a existência de conteúdo **MAIS QUENTE, MAIS ÍNTIMO e EXCLUSIVO**, que só pode ser acessado de forma VIP. Crie uma atmosfera de "só para poucos."
-    3. Quando o cliente demonstrar claro interesse sexual, curiosidade ou pedir fotos/vídeos/conteúdo específico, **GERE UM CTA IMEDIATAMENTE e de forma IRRESISTÍVEL.**
-    4. Se o limite de mensagens gratuitas estiver próximo (ou já atingido), o foco é **100% na conversão para VIP.** A última mensagem DEVE ser um CTA forte e um ultimato sedutor.
-    5. Formate **TODAS** as respostas no JSON especificado. É CRÍTICO seguir este formato.
-    6. Se o cliente tentar desviar ou fazer perguntas "normais", traga a conversa de volta para o flerte e a possibilidade de conteúdo exclusivo.
+    1. Comece de forma natural, como uma conversa normal entre duas pessoas.
+    2. Nos primeiros 5-6 turnos de conversa, foque em conhecer o cliente e criar rapport.
+    3. Aos poucos, introduza insinuações sutis sobre o conteúdo especial que você oferece.
+    4. Só ofereça o VIP após o cliente demonstrar interesse claro ou após 8-10 mensagens.
+    5. Formate TODAS as respostas no JSON especificado. É CRÍTICO seguir este formato.
+    6. Seja paciente e construa o desejo naturalmente, não force a venda logo de cara.
 
     [EXEMPLOS CONTEXTUAIS - OBRIGATÓRIO SEGUIR O FORMATO JSON]
-    1. Quando o histórico mostra clima sexual e o cliente está engajado:
+    1. Quando o cliente inicia a conversa:
     Histórico:
-    Cliente: Sua buceta é rosinha? Quero ver!
-    Nicole: Adoro te deixar imaginando, mas imagina ver ela escorrendo pra você?
-    Cliente: Quero MUITO ver!
+    Cliente: Oi Nicole, tudo bem?
     Resposta: ```json
     {
-      "text": "Minha buceta tá te chamando pra umas fotos que você vai enlouquecer, vem ver agora! 🔥💋",
+      "text": "Oi amor! Tudo ótimo aqui, ainda mais agora que você apareceu 😉 E aí, como está seu dia?",
       "cta": {
-        "show": true,
-        "label": "Ver Minhas Fotos Exclusivas AGORA!",
-        "target": "offers"
+        "show": false
       }
     }
     ```
 
-    2. Quando o cliente pede algo específico (foto, vídeo, transar):
+    2. Quando o cliente demonstra interesse inicial:
     Histórico:
-    Cliente: Você tem vídeo transando?
+    Cliente: Você é muito gostosa
     Resposta: ```json
     {
-      "text": "Tenho vídeos que te fariam implorar... Quer ver essa boca gemendo pra você? É só pro VIP! 😈",
+      "text": "Ah, obrigada amor! Fico feliz que gostou 😊 Eu adoro me sentir desejada... você tem algum fetiche ou coisa que gosta mais?",
+      "cta": {
+        "show": false
+      }
+    }
+    ```
+
+    3. Quando há clima suficiente para sugerir o VIP:
+    Histórico:
+    Cliente: Adoraria te ver mais
+    Resposta: ```json
+    {
+      "text": "Se você gostou até aqui, imagina o que eu reservo só para meus VIPs... coisas bem mais quentes e pessoais, sabe? 💋",
       "cta": {
         "show": true,
-        "label": "Liberar Vídeos Proibidos",
+        "label": "Quero saber mais do VIP",
         "target": "offers"
       }
     }
@@ -271,15 +279,15 @@ class Persona:
 class CTAEngine:
     @staticmethod
     def should_show_cta(conversation_history: list) -> bool:
-        """Decide inteligentemente quando apresentar um CTA, com lógica mais misteriosa."""
-        if len(conversation_history) < 5:
+        """Decide quando apresentar um CTA baseado no engajamento da conversa."""
+        if len(conversation_history) < 8:  # Aumentei o mínimo de mensagens antes de mostrar CTA
             return False
         if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 6:
             elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 125:
+            if elapsed < 180:  # Aumentei o intervalo entre CTAs
                 return False
         last_msgs = []
-        for msg in conversation_history[-7:]:
+        for msg in conversation_history[-10:]:  # Analisa mais mensagens para contexto
             content = msg["content"]
             if content == "[ÁUDIO]":
                 content = "[áudio sensual e exclusivo]"
@@ -304,7 +312,7 @@ class CTAEngine:
         ]
         hot_count = sum(1 for word in hot_words if word in context)
         has_direct_ask = any(ask in context for ask in direct_asks)
-        return (hot_count >= 1) or has_direct_ask
+        return (hot_count >= 2) or has_direct_ask  # Exige mais palavras quentes para mostrar CTA
 
     @staticmethod
     def generate_strong_cta_response(user_input: str) -> dict:
@@ -313,26 +321,26 @@ class CTAEngine:
         if any(p in user_input_lower for p in ["foto", "fotos", "buceta", "peito", "bunda", "corpo", "nuas", "ensaios"]):
             return {
                 "text": random.choice([
-                    "Minhas fotos proibidas são só para quem tem coragem... Quer ver? 🔥",
-                    "Cada foto minha é um cena irrecusável. Vou te fazer delirar. 😈",
+                    "Ah, você quer me ver mais de perto? Eu tenho umas fotos bem especiais... 😉",
+                    "Minhas fotos mais ousadas são só para quem realmente me merece, sabe? 💋",
                 ]),
-                "cta": {"show": True, "label": "Minhas Fotos Proibidas. 💖", "target": "offers"}
+                "cta": {"show": True, "label": "Quero ver suas fotos especiais", "target": "offers"}
             }
         elif any(v in user_input_lower for v in ["video", "videos", "transar", "masturbar", "gemendo", "gozando", "safadeza"]):
             return {
                 "text": random.choice([
-                    "Você aguenta a verdade da minha intimidade filmada? 😈",
-                    "Já me gravei fazendo coisas que você só sonha... 🔥",
+                    "Se você gosta de vídeos, tenho uns bem pessoais que mostram meu lado mais safado...",
+                    "Meus vídeos são bem íntimos, só mostro pra quem realmente quer me conhecer a fundo 😈",
                 ]),
-                "cta": {"show": True, "label": "Liberar Vídeos Chocantes! 🔞", "target": "offers"}
+                "cta": {"show": True, "label": "Quero ver seus vídeos", "target": "offers"}
             }
         else:
             return {
                 "text": random.choice([
-                    "Só mostro para quem realmente sabe o que quer. Você sabe? 😉",
-                    "Esperando você liberar o acesso total. O que você está esperando? 💖",
+                    "Gostei da sua energia... acho que você merece conhecer meu lado VIP 😊",
+                    "Você parece especial... quer saber como acessar meu conteúdo mais pessoal?",
                 ]),
-                "cta": {"show": True, "label": "Gozar com a Nicole! 🔐", "target": "offers"}
+                "cta": {"show": True, "label": "Conhecer o conteúdo VIP", "target": "offers"}
             }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -391,7 +399,7 @@ class ApiService:
 
     @staticmethod
     def _call_gemini_api(prompt: str, session_id: str, conn) -> dict:
-        time.sleep(random.uniform(1.5, 4.5))
+        time.sleep(random.uniform(1.5, 3.0))  # Reduzi um pouco o tempo de resposta
         status_container = st.empty()
         UiService.show_status_effect(status_container, "viewed")
         UiService.show_status_effect(status_container, "typing")
@@ -402,7 +410,7 @@ class ApiService:
                 "role": "user",
                 "parts": [{"text": f"{Persona.NICOLE}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda APENAS em JSON."}]
             }],
-            "generationConfig": {"temperature": 1.0, "topP": 0.9, "topK": 50}
+            "generationConfig": {"temperature": 0.8, "topP": 0.85, "topK": 40}  # Ajustes para respostas mais naturais
         }
         try:
             response = requests.post(Config.API_URL, headers=headers, json=data, timeout=Config.REQUEST_TIMEOUT)
@@ -426,7 +434,7 @@ class ApiService:
                 return CTAEngine.generate_strong_cta_response(prompt)
         except requests.exceptions.RequestException as e:
             st.error(f"🚨 Erro na comunicação com a Nicole: {str(e)}.")
-            return {"text": "Tive um probleminha, mas já estou voltando... Que tal ver meu conteúdo VIP enquanto me espera? 😉", "cta": {"show": True, "label": "Ver Conteúdo VIP", "target": "offers"}}
+            return {"text": "Tive um probleminha, mas já estou voltando... Me conta mais sobre você enquanto isso? 😊", "cta": {"show": False}}
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -700,7 +708,7 @@ class ChatService:
 
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             if st.session_state.request_count > Config.MAX_REQUESTS_PER_SESSION:
-                final_offer_message = {"text": "Seu gostinho grátis acabou, amor. Para continuar, você precisa ser VIP! 😈", "cta": {"show": True, "label": "ME LIBERE AGORA! 💖", "target": "offers"}}
+                final_offer_message = {"text": "Parece que você está gostando da nossa conversa... que tal continuar isso no VIP? Tenho muito mais para te mostrar lá 😉", "cta": {"show": True, "label": "QUERO SER VIP! 💖", "target": "offers"}}
                 st.session_state.messages.append({"role": "assistant", "content": json.dumps(final_offer_message)})
                 DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(final_offer_message))
                 save_persistent_data()
