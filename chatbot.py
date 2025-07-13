@@ -136,7 +136,7 @@ class Config:
 
     # Respostas de fallback se a API falhar
     FALLBACK_RESPONSES = [
-        "Que delícia essa conversa! Me conta mais 😈",
+        "Eae lindo! Tô aqui me arrumando toda pra você... 😉",
         "Hmm... isso é bem excitante 💋",
         "Eu adoro quando você fala assim... vamos continuar? 😉"
     ]
@@ -419,8 +419,8 @@ class ApiService:
             print(f"Erro na API: {str(e)}")
             # Fallbacks mais variados e contextualizados
             fallbacks = [
-                f"Que delícia essa conversa! {random.choice(['Me conta mais', 'O que te excitou hoje?', 'Você me deixa louca'])} 😈",
-                f"{random.choice(['Hmm', 'Ah', 'Nossa'])}... {random.choice(['isso é bem excitante', 'você sabe provocar', 'me conta mais sobre isso'])} 💋",
+                f"Eae lindo! Tô aqui me arrumando toda pra você... 😉 {random.choice(['Me conta mais', 'Só isso? Eu sei que você tem mais pra dizer... 😈', 'Você me deixa louca'])} 😈",
+                f"{random.choice(['Hmm', 'Ah', 'Nossa'])}... {random.choice(['isso é bem excitante', 'você sabe provocar', 'Já pensou se a gente transforma esses elogios em algo real? 😉'])} 💋",
                 f"Eu adoro quando você fala assim... {random.choice(['vamos continuar?', 'quer me ver mais?', 'me diz o que você faria'])} 😉"
             ]
             return {
