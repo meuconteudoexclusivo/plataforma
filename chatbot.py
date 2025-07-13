@@ -271,7 +271,7 @@ class Persona:
 class CTAEngine:
     @staticmethod
     def should_show_cta(conversation_history: list) -> bool:
-        """Decide inteligentemente quando apresentar um CTA, com lógica mais intuitiva."""
+        """Decide inteligentemente quando apresentar um CTA, com lógica mais misteriosa."""
         if len(conversation_history) < 5:
             return False
         if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 6:
@@ -308,7 +308,7 @@ class CTAEngine:
 
     @staticmethod
     def generate_strong_cta_response(user_input: str) -> dict:
-        """Gera uma resposta com CTA contextual e intuitivo como fallback."""
+        """Gera uma resposta com CTA contextual e persuasiva como fallback."""
         user_input_lower = user_input.lower()
         if any(p in user_input_lower for p in ["foto", "fotos", "buceta", "peito", "bunda", "corpo", "nuas", "ensaios"]):
             return {
@@ -518,7 +518,7 @@ class UiService:
 
     @staticmethod
     def show_gallery_page():
-        st.markdown('<h3>MINHA GALERIA: UMA LOUCURA PARA SEUS OLHOS! 😈</h3>', unsafe_allow_html=True)
+        st.markdown('<h3>MINHA GALERIA É UMA LOUCURA PARA SEUS OLHOS! 😈</h3>', unsafe_allow_html=True)
         st.markdown('<p>Apenas um vislumbre do que te espera... o acesso completo está te chamando.</p>', unsafe_allow_html=True)
         cols = st.columns(3)
         for idx, col in enumerate(cols):
