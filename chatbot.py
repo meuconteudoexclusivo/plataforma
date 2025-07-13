@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO DE PÁGINA IRRESISTÍVEL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Nicole Saheb Premium VIP – Acesse o Inédito!",
+    page_title="Nicole Saheb – Acesse Restrito!",
     page_icon="💖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -271,12 +271,12 @@ class Persona:
 class CTAEngine:
     @staticmethod
     def should_show_cta(conversation_history: list) -> bool:
-        """Decide inteligentemente quando apresentar um CTA, com lógica mais agressiva."""
-        if len(conversation_history) < 2:
+        """Decide inteligentemente quando apresentar um CTA, com lógica mais intuitiva."""
+        if len(conversation_history) < 5:
             return False
-        if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 0:
+        if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 6:
             elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 75:
+            if elapsed < 125:
                 return False
         last_msgs = []
         for msg in conversation_history[-7:]:
@@ -308,31 +308,31 @@ class CTAEngine:
 
     @staticmethod
     def generate_strong_cta_response(user_input: str) -> dict:
-        """Gera uma resposta com CTA contextual e agressivo como fallback."""
+        """Gera uma resposta com CTA contextual e intuitivo como fallback."""
         user_input_lower = user_input.lower()
         if any(p in user_input_lower for p in ["foto", "fotos", "buceta", "peito", "bunda", "corpo", "nuas", "ensaios"]):
             return {
                 "text": random.choice([
-                    "Minhas fotos proibidas são só para quem tem coragem de ir além... Quer ver a minha intimidade escancarada? 🔥",
-                    "Cada foto minha é um convite irrecusável. Você está pronto para o que realmente vai te fazer delirar? 😈",
+                    "Minhas fotos proibidas são só para quem tem coragem... Quer ver? 🔥",
+                    "Cada foto minha é um cena irrecusável. Vou te fazer delirar. 😈",
                 ]),
-                "cta": {"show": True, "label": "Ver Fotos Proibidas AGORA! 💖", "target": "offers"}
+                "cta": {"show": True, "label": "Minhas Fotos Proibidas. 💖", "target": "offers"}
             }
         elif any(v in user_input_lower for v in ["video", "videos", "transar", "masturbar", "gemendo", "gozando", "safadeza"]):
             return {
                 "text": random.choice([
-                    "Meus vídeos são para os mais audaciosos. Você aguenta a verdade da minha intimidade filmada? É só pro VIP! 😈",
-                    "Já me gravei fazendo coisas que você só sonha... Que tal ter acesso a tudo isso agora? O tempo está correndo! 🔥",
+                    "Você aguenta a verdade da minha intimidade filmada? 😈",
+                    "Já me gravei fazendo coisas que você só sonha... 🔥",
                 ]),
                 "cta": {"show": True, "label": "Liberar Vídeos Chocantes! 🔞", "target": "offers"}
             }
         else:
             return {
                 "text": random.choice([
-                    "Eu guardo segredos que só mostro para quem realmente sabe o que quer. Você é um deles? 😉",
-                    "Minha intimidade está pulsando, esperando você liberar o acesso total. O que você está esperando para se render? 💖",
+                    "Só mostro para quem realmente sabe o que quer. Você sabe? 😉",
+                    "Esperando você liberar o acesso total. O que você está esperando? 💖",
                 ]),
-                "cta": {"show": True, "label": "Descobrir o Segredo da Nicole! 🔐", "target": "offers"}
+                "cta": {"show": True, "label": "Gozar com a Nicole! 🔐", "target": "offers"}
             }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -446,7 +446,7 @@ class UiService:
 
     @staticmethod
     def show_call_effect():
-        LIGANDO_DELAY = 4
+        LIGANDO_DELAY = 3
         ATENDIDA_DELAY = 2
         call_container = st.empty()
         call_container.markdown("""
@@ -474,7 +474,7 @@ class UiService:
 
     @staticmethod
     def show_status_effect(container, status_type):
-        status_messages = {"viewed": "Nicole Visualizou 👀", "typing": "Nicole Digitanto... 🔥"}
+        status_messages = {"viewed": "Visualizou 👀", "typing": "Digitanto... 🔥"}
         message = status_messages[status_type]
         dots = ""
         start_time = time.time()
@@ -518,19 +518,19 @@ class UiService:
 
     @staticmethod
     def show_gallery_page():
-        st.markdown('<h3>MINHA GALERIA: UM BANQUETE PARA SEUS OLHOS! 😈</h3>', unsafe_allow_html=True)
+        st.markdown('<h3>MINHA GALERIA: UMA LOUCURA PARA SEUS OLHOS! 😈</h3>', unsafe_allow_html=True)
         st.markdown('<p>Apenas um vislumbre do que te espera... o acesso completo está te chamando.</p>', unsafe_allow_html=True)
         cols = st.columns(3)
         for idx, col in enumerate(cols):
             with col:
                 st.markdown(f'<div style="position: relative; border-radius: 15px; overflow: hidden;"><img src="{Config.IMG_GALLERY[idx]}" style="width:100%; filter: blur(8px) brightness(0.6);"><div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 1.6em; text-shadow: 0 0 12px #000;">🔥 VIP Bloqueado 🔥</div></div>', unsafe_allow_html=True)
-        if st.button("Liberar Minha Galeria VIP AGORA! 🔓", key="vip_button_gallery", use_container_width=True, type="primary"):
+        if st.button("Acessar Minha Galeria Secreta. 🔓", key="vip_button_gallery", use_container_width=True, type="primary"):
             st.session_state.current_page = "offers"
             st.rerun()
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #FF66B3;">Seu Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="text-align: center; color: #FF66B3;">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -544,22 +544,22 @@ class NewPages:
     def show_home_page():
         st.markdown("""
         <div style="background: linear-gradient(135deg, #1A0033, #3D0066); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #FF0066;">
-            <h1 style="color: #FF66B3; font-size: 3.5em;">Nicole Saheb Premium VIP 💖</h1>
-            <p style="font-size: 1.4em;">Descubra o prazer ilimitado. Conteúdo quente, exclusivo e sem censura.</p>
+            <h1 style="color: #FF66B3; font-size: 3.5em;">Nicole Saheb 💖</h1>
+            <p style="font-size: 1.4em;">Descubra o prazer de um bom conteúdo quente, exclusivo e sem censura.</p>
         </div>
         """, unsafe_allow_html=True)
         cols = st.columns(3)
         for col, img in zip(cols, Config.IMG_HOME_PREVIEWS):
             with col:
                 st.image(img, use_container_width=True, caption="Ainda Bloqueado... 😉")
-        if st.button("Iniciar Conversa Privada com Nicole 💋", use_container_width=True, type="primary", key="home_chat_button"):
+        if st.button("Conversar com Nicole 💋", use_container_width=True, type="primary", key="home_chat_button"):
             st.session_state.current_page = "chat"
             save_persistent_data()
             st.rerun()
 
     @staticmethod
     def show_offers_page():
-        st.markdown('<div class="offers-header"><h2>ESCOLHA SEU CAMINHO PARA O PRAZER! 😈</h2><p>Qual pacote te fará delirar?</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="offers-header"><h2>Acesse e nao se arrependerá! 😈</h2><p>Qual é o tamanho do seu pacote?</p></div>', unsafe_allow_html=True)
         
         # Pacotes
         cols = st.columns(3)
@@ -688,7 +688,7 @@ class ChatService:
             save_persistent_data()
             st.rerun()
 
-        user_input = st.chat_input("Me diga o que você deseja, gatinho... 😉", key="chat_input_main")
+        user_input = st.chat_input("Me diga o que você deseja, amor... 😉", key="chat_input_main")
         
         if user_input:
             cleaned_input = ChatService.validate_input(user_input)
@@ -700,7 +700,7 @@ class ChatService:
 
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             if st.session_state.request_count > Config.MAX_REQUESTS_PER_SESSION:
-                final_offer_message = {"text": "Seu gostinho grátis acabou, gatinho. Para continuar, você precisa ser VIP! 😈", "cta": {"show": True, "label": "QUERO SER VIP AGORA! 💖", "target": "offers"}}
+                final_offer_message = {"text": "Seu gostinho grátis acabou, amor. Para continuar, você precisa ser VIP! 😈", "cta": {"show": True, "label": "ME LIBERE AGORA! 💖", "target": "offers"}}
                 st.session_state.messages.append({"role": "assistant", "content": json.dumps(final_offer_message)})
                 DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(final_offer_message))
                 save_persistent_data()
@@ -741,7 +741,7 @@ def main():
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #FF0066;"><h2 style="color: #FF66B3;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
-            if st.button("COMEÇAR A CONVERSAR COM NICOLE AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
+            if st.button("CONVERSAR COM NICOLE AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
                 st.session_state.update({'chat_started': True, 'current_page': 'chat', 'audio_sent': False})
                 save_persistent_data()
                 st.rerun()
