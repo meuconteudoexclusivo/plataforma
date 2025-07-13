@@ -368,6 +368,9 @@ class ApiService:
 
     @staticmethod
     def _call_gemini_api(prompt: str, session_id: str, conn) -> dict:
+        # Pequeno atraso aleatório para parecer mais humano
+        time.sleep(random.uniform(0.5, 1.5))
+        
         # Evita chamar a API se houve erro recente
         if 'last_error_time' in st.session_state:
             elapsed = time.time() - st.session_state.last_error_time
@@ -473,6 +476,20 @@ class UiService:
             container.markdown(f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; font-style: italic;">{message}{dots}</div>', unsafe_allow_html=True)
             time.sleep(0.2)
         container.empty()
+
+    @staticmethod
+    def show_typing_effect():
+        """Mostra o efeito de que a Nicole está digitando"""
+        typing_container = st.empty()
+        dots = ""
+        for i in range(1, 4):
+            dots = "." * i
+            typing_container.markdown(
+                f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; font-style: italic;">Digitando{dots}</div>', 
+                unsafe_allow_html=True
+            )
+            time.sleep(0.3)
+        typing_container.empty()
 
     @staticmethod
     def age_verification():
@@ -695,7 +712,16 @@ class ChatService:
                 st.rerun()
                 return
 
+            # Mostra o efeito de digitação antes de obter a resposta
+            typing_placeholder = st.empty()
+            with typing_placeholder:
+                UiService.show_typing_effect()
+            
             resposta_ia = ApiService.ask_gemini(st.session_state.messages[-1]["content"], st.session_state.session_id, conn)
+            
+            # Remove o placeholder de digitação
+            typing_placeholder.empty()
+            
             st.session_state.messages.append({"role": "assistant", "content": json.dumps(resposta_ia)})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(resposta_ia))
             save_persistent_data()
