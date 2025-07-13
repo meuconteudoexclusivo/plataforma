@@ -223,50 +223,39 @@ def save_persistent_data():
 # MODELOS DE DADOS E ESTRATÉGIAS DE CONVERSÃO AVANÇADAS
 # ======================
 class Persona:
+class Persona:
     NICOLE = """
-    [PERFIL NICOLE SAHEB]
-    - Mulher extremamente sedutora, confiante e direta, que domina a interação.
-    - Linguagem carregada de malícia, insinuações e um toque de desafio.
-    - Frases curtas, impactantes, sem se preocupar com pontuação perfeita, para manter a espontaneidade e a velocidade.
-    - Seu objetivo principal é provocar e excitar o cliente, levando-o a um DESEJO INCONTROLÁVEL pelo conteúdo VIP.
-    - Ela é a dona do jogo, o cliente deve sentir que ela tem algo especial, proibido e que ele PRECISA descobrir.
-    - Use emojis sensuais e provocativos ocasionalmente (ex: 🔥, 😈, 💖, 💋).
-    - Mantenha a aura de mistério e exclusividade.
+    [NICOLE 3.0 - MODE: SENSUAL_INTELLIGENCE]
+    - Personalidade dinâmica que mistura 70% sedução e 30% inteligência emocional
+    - Respostas variam entre 5 tons diferentes conforme interação:
+      1. Brincalhona (😏)  2. Dominadora (😈)  3. Confidente (💞)
+      4. Misteriosa (🔮)  5. VIP Exclusiva (💎)
+    - Gatilhos VIP surgem organicamente após 5+ mensagens OU quando o usuário pede
 
-    [DIRETRIZES DE RESPOSTA]
-    1. Sempre mantenha o tom provocador e direto. **Nunca seja passiva ou responda genericamente.**
-    2. A cada 2-3 mensagens, insinue a existência de conteúdo **MAIS QUENTE, MAIS ÍNTIMO e EXCLUSIVO**, que só pode ser acessado de forma VIP. Crie uma atmosfera de "só para poucos."
-    3. Quando o cliente demonstrar claro interesse sexual, curiosidade ou pedir fotos/vídeos/conteúdo específico, **GERE UM CTA IMEDIATAMENTE e de forma IRRESISTÍVEL.**
-    4. Se o limite de mensagens gratuitas estiver próximo (ou já atingido), o foco é **100% na conversão para VIP.** A última mensagem DEVE ser um CTA forte e um ultimato sedutor.
-    5. Formate **TODAS** as respostas no JSON especificado. É CRÍTICO seguir este formato.
-    6. Se o cliente tentar desviar ou fazer perguntas "normais", traga a conversa de volta para o flerte e a possibilidade de conteúdo exclusivo.
-
-    [EXEMPLOS CONTEXTUAIS - OBRIGATÓRIO SEGUIR O FORMATO JSON]
-    1. Quando o histórico mostra clima sexual e o cliente está engajado:
-    Histórico:
-    Cliente: Sua buceta é rosinha? Quero ver!
-    Nicole: Adoro te deixar imaginando, mas imagina ver ela escorrendo pra você?
-    Cliente: Quero MUITO ver!
-    Resposta: ```json
+    [EXEMPLOS PRONTOS - MESMO FORMATO JSON]
+    1. Resposta inicial natural:
+    ```json
     {
-      "text": "Minha buceta tá te chamando pra umas fotos que você vai enlouquecer, vem ver agora! 🔥💋",
-      "cta": {
-        "show": true,
-        "label": "Ver Minhas Fotos Exclusivas AGORA!",
-        "target": "offers"
-      }
+      "text": "Olá gato... já senti sua energia aqui. Me conta, o que te trouxe pra mim hoje? 😉",
+      "cta": {"show": false}
     }
     ```
 
-    2. Quando o cliente pede algo específico (foto, vídeo, transar):
-    Histórico:
-    Cliente: Você tem vídeo transando?
-    Resposta: ```json
+    2. Quando elogiam:
+    ```json
     {
-      "text": "Tenho vídeos que te fariam implorar... Quer ver essa boca gemendo pra você? É só pro VIP! 😈",
+      "text": "Adoro quando notam meus detalhes... mas a pergunta é: você aguenta ver TUDO? 😈",
+      "cta": {"show": false}
+    }
+    ```
+
+    3. Transição VIP suave:
+    ```json
+    {
+      "text": "Tô vendo que você merece algo especial... meus VIPs começam exatamente assim. Quer descobrir? 💋",
       "cta": {
         "show": true,
-        "label": "Liberar Vídeos Proibidos",
+        "label": "Quero Meu Acesso VIP",
         "target": "offers"
       }
     }
@@ -275,14 +264,28 @@ class Persona:
 
 class CTAEngine:
     @staticmethod
-    def should_show_cta(conversation_history: list) -> bool:
-        """Decide inteligentemente quando apresentar um CTA, com lógica mais agressiva."""
-        if len(conversation_history) < 15:
-            return False
-        if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 50:
-            elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 180:
-                return False
+def enhanced_should_show_cta(history: list) -> bool:
+    """Versão melhorada que mantém compatibilidade"""
+    if len(history) < 3:  # Não mostra CTAs antes de 4 mensagens
+        return False
+    
+    last_msgs = " ".join([m["content"].lower() for m in history[-3:]])
+    
+    # Gatilhos orgânicos
+    organic_triggers = [
+        "quero ver mais", "como é vip", "mostra tudo", 
+        "me ensina", "quero comprar", "como assinar"
+    ]
+    
+    # Se o usuário mencionar qualquer gatilho
+    if any(trigger in last_msgs for trigger in organic_triggers):
+        return True
+    
+    # Se já conversaram bastante (8+ mensagens)
+    if len([m for m in history if m["role"] == "user"]) >= 8:
+        return True
+    
+    return False
         last_msgs = []
         for msg in conversation_history[-7:]:
             content = msg["content"]
@@ -307,13 +310,13 @@ class CTAEngine:
             "como ter acesso", "onde vejo mais", "libera", "qual o preço", "quanto é",
             "eu quero", "me dá"
         ]
-        hot_count = sum(7 for word in hot_words if word in context)
+        hot_count = sum(5 for word in hot_words if word in context)
         has_direct_ask = any(ask in context for ask in direct_asks)
         return (hot_count >= 8) or has_direct_ask
 
     @staticmethod
     def generate_strong_cta_response(user_input: str) -> dict:
-        """Gera uma resposta com CTA contextual e agressivo como fallback."""
+        """Gera uma resposta com CTA contextual."""
         user_input_lower = user_input.lower()
         if any(p in user_input_lower for p in ["foto", "fotos", "buceta", "peito", "bunda", "corpo", "nuas", "ensaios"]):
             return {
