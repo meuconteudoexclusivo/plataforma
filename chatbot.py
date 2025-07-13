@@ -239,6 +239,10 @@ class Persona:
     4. Comece com cumprimentos normais se for o início da conversa
     5. Progressão natural: cumprimento -> perguntas -> flerte -> sugestão de conteúdo
     6. Nunca use respostas genéricas como "o que mais você quer saber?"
+    7. Se for cumprimento: responda calorosamente com variação
+    8. Se for resposta curta ("hum", "ok"): peça elaboração de forma sensual
+    9. Se mencionar "fotos"/"vídeos": sugira o VIP de forma provocante
+    10. Nunca repita frases idênticas às últimas 3 respostas
     """
 
 class CTAEngine:
