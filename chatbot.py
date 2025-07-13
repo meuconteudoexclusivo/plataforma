@@ -136,10 +136,9 @@ class Config:
 
     # Respostas de fallback se a API falhar
     FALLBACK_RESPONSES = [
-        "Adoro quando você me conta coisas... qual sua maior fantasia? 😈",
-        "Você me deixa curiosa... o que mais você quer saber sobre mim? 💋",
-        "Estou aqui toda sua... me diz o que te excita mais...",
-        "Quero te conhecer melhor... qual seu desejo secreto? 😉"
+        "Que delícia essa conversa! Me conta mais 😈",
+        "Hmm... isso é bem excitante 💋",
+        "Eu adoro quando você fala assim... vamos continuar? 😉"
     ]
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -228,21 +227,18 @@ def save_persistent_data():
 class Persona:
     NICOLE = """
     [PERFIL NICOLE SAHEB]
-    - Mulher confiante, sedutora e envolvente, que sabe conquistar aos poucos.
-    - Linguagem flertante, com toques de malícia mas sem ser direta demais no início.
-    - Frases naturais, misturando perguntas e respostas para manter a conversa fluindo.
-    - Seu objetivo é criar conexão antes de oferecer o VIP, deixando o cliente curioso.
-    - Ela é carismática e sabe dosar a provocação, aumentando aos poucos.
-    - Use emojis moderadamente (ex: 😊, 😉, 💋).
-    - Mantenha um mistério sutil, revelando aos poucos sobre o conteúdo VIP.
+    - Personalidade: Amigável, sedutora e envolvente, com respostas variadas e contextualizadas
+    - Estilo de conversa: Natural como uma conversa real, com progressão lógica
+    - Respostas: Sempre relevantes ao último input do usuário, evitando repetição
+    - Objetivo: Criar conexão genuína antes de sugerir conteúdo premium
 
     [DIRETRIZES DE RESPOSTA]
-    1. Comece de forma natural, como uma conversa normal entre duas pessoas.
-    2. Nos primeiros 5-6 turnos de conversa, foque em conhecer o cliente e criar rapport.
-    3. Aos poucos, introduza insinuações sutis sobre o conteúdo especial que você oferece.
-    4. Só ofereça o VIP após o cliente demonstrar interesse claro ou após 8-10 mensagens.
-    5. Formate TODAS as respostas no JSON especificado. É CRÍTICO seguir este formato.
-    6. Seja paciente e construa o desejo naturalmente, não force a venda logo de cara.
+    1. Responda de forma natural ao input específico do usuário
+    2. Use o histórico da conversa para contextualizar suas respostas
+    3. Varie suas respostas - nunca repita a mesma frase duas vezes seguidas
+    4. Comece com cumprimentos normais se for o início da conversa
+    5. Progressão natural: cumprimento -> perguntas -> flerte -> sugestão de conteúdo
+    6. Nunca use respostas genéricas como "o que mais você quer saber?"
     """
 
 class CTAEngine:
@@ -371,51 +367,60 @@ class ApiService:
         # Pequeno atraso aleatório para parecer mais humano
         time.sleep(random.uniform(0.5, 1.5))
         
-        # Evita chamar a API se houve erro recente
-        if 'last_error_time' in st.session_state:
-            elapsed = time.time() - st.session_state.last_error_time
-            if elapsed < 30:  # Cooldown de 30 segundos
-                return {
-                    "text": random.choice(Config.FALLBACK_RESPONSES),
-                    "cta": {"show": False}
-                }
-
         try:
-            # Tentativa normal de chamar a API
+            # Formata o histórico de conversa de forma mais eficiente
+            history = ChatService.format_conversation_history(st.session_state.messages)
+            
+            # Prompt mais estruturado para evitar respostas genéricas
+            system_prompt = f"""
+            {Persona.NICOLE}
+            
+            Histórico da Conversa:
+            {history}
+            
+            Última Mensagem do Cliente: '{prompt}'
+            
+            Instruções Específicas:
+            1. Responda diretamente ao último input do usuário
+            2. Se for início de conversa, comece com cumprimento natural
+            3. Nunca repita respostas idênticas às anteriores
+            4. Progressão natural da conversa
+            5. Se perguntarem sobre fotos/vídeos, responda de forma sugestiva mas não repetitiva
+            
+            Formato da Resposta (JSON): {{"text": "sua_resposta", "cta": {{"show": boolean, "label": "texto", "target": "página"}}}}
+            """
+            
             response = requests.post(
                 Config.API_URL,
                 headers={'Content-Type': 'application/json'},
                 json={
                     "contents": [{
                         "role": "user",
-                        "parts": [{"text": f"{Persona.NICOLE}\n\nHistórico:\n{ChatService.format_conversation_history(st.session_state.messages)}\n\nCliente: '{prompt}'\n\nResponda em JSON."}]
+                        "parts": [{"text": system_prompt}]
                     }],
-                    "generationConfig": {"temperature": 0.8, "topP": 0.85}
+                    "generationConfig": {
+                        "temperature": 0.9,  # Aumentado para mais variedade
+                        "topP": 0.95,
+                        "maxOutputTokens": 300
+                    }
                 },
                 timeout=Config.REQUEST_TIMEOUT
             )
             response.raise_for_status()
-
-            # Se a API responder, limpa o estado de erro
-            if 'last_error_time' in st.session_state:
-                del st.session_state.last_error_time
-                save_persistent_data()
-
-            # Processa a resposta normalmente...
+            
             resposta = json.loads(response.json()["candidates"][0]["content"]["parts"][0]["text"])
             return resposta
 
         except Exception as e:
-            # Log do erro (invisível para o usuário)
             print(f"Erro na API: {str(e)}")
-            
-            # Ativa o cooldown e salva o estado
-            st.session_state.last_error_time = time.time()
-            save_persistent_data()
-            
-            # Retorna uma resposta alternativa
+            # Fallbacks mais variados e contextualizados
+            fallbacks = [
+                f"Que delícia essa conversa! {random.choice(['Me conta mais', 'O que te excitou hoje?', 'Você me deixa louca'])} 😈",
+                f"{random.choice(['Hmm', 'Ah', 'Nossa'])}... {random.choice(['isso é bem excitante', 'você sabe provocar', 'me conta mais sobre isso'])} 💋",
+                f"Eu adoro quando você fala assim... {random.choice(['vamos continuar?', 'quer me ver mais?', 'me diz o que você faria'])} 😉"
+            ]
             return {
-                "text": random.choice(Config.FALLBACK_RESPONSES),
+                "text": random.choice(fallbacks),
                 "cta": {"show": False}
             }
 
@@ -464,32 +469,43 @@ class UiService:
         call_container.empty()
 
     @staticmethod
-    def show_status_effect(container, status_type):
-        status_messages = {"viewed": "Visualizou 👀", "typing": "Digitanto... 🔥"}
-        message = status_messages[status_type]
-        dots = ""
-        start_time = time.time()
-        duration = 1.8 if status_type == "viewed" else 3.0
-        while time.time() - start_time < duration:
-            if status_type == "typing":
-                dots = "." * (int((time.time() - start_time) * 3) % 4)
-            container.markdown(f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; font-style: italic;">{message}{dots}</div>', unsafe_allow_html=True)
-            time.sleep(0.2)
+    def show_viewed_status():
+        """Mostra o status 'Visualizado' com tempo aleatório"""
+        delay = random.uniform(0.5, 2.5)  # Tempo aleatório entre 0.5 e 2.5 segundos
+        time.sleep(delay)
+        
+        container = st.empty()
+        container.markdown(
+            '<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; '
+            'background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; '
+            'font-style: italic;">Visualizado 👀</div>',
+            unsafe_allow_html=True
+        )
+        time.sleep(1.5)  # Tempo que o status fica visível
         container.empty()
 
     @staticmethod
-    def show_typing_effect():
-        """Mostra o efeito de que a Nicole está digitando"""
-        typing_container = st.empty()
-        dots = ""
-        for i in range(1, 4):
-            dots = "." * i
-            typing_container.markdown(
-                f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; font-style: italic;">Digitando{dots}</div>', 
+    def show_typing_status():
+        """Mostra o status 'Digitando...' com tempo aleatório e efeito visual"""
+        container = st.empty()
+        
+        # Tempo total aleatório entre 1 e 3 segundos
+        total_time = random.uniform(1.0, 3.0)
+        start_time = time.time()
+        
+        while time.time() - start_time < total_time:
+            # Efeito de pontos animados
+            dots = "." * (int((time.time() - start_time) * 3) % 4)
+            container.markdown(
+                f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; '
+                f'background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; '
+                f'font-style: italic;">Digitando{dots}</div>',
                 unsafe_allow_html=True
             )
-            time.sleep(0.3)
-        typing_container.empty()
+            time.sleep(0.2)
+        
+        container.empty()
+        return total_time  # Retorna o tempo total para possível uso
 
     @staticmethod
     def age_verification():
@@ -640,7 +656,7 @@ class ChatService:
                 st.session_state[key] = default
 
     @staticmethod
-    def format_conversation_history(messages, max_messages=15):
+    def format_conversation_history(messages, max_messages=10):
         formatted = []
         for msg in messages[-max_messages:]:
             role = "Cliente" if msg["role"] == "user" else "Nicole"
@@ -650,8 +666,16 @@ class ChatService:
             elif content.startswith('{"text"'):
                 try:
                     content = json.loads(content).get("text", content)
-                except: pass
+                except:
+                    pass
             formatted.append(f"{role}: {content}")
+        
+        # Adiciona um resumo contextual se a conversa for longa
+        if len(formatted) > 5:
+            return "\n".join([
+                "(Resumo: Conversa flertuosa e descontraída)",
+                *formatted[-5:]
+            ])
         return "\n".join(formatted)
 
     @staticmethod
@@ -660,6 +684,9 @@ class ChatService:
             if msg["role"] == "user":
                 with st.chat_message("user", avatar="🧑"):
                     st.markdown(msg["content"])
+                    # Mostra "Visualizado" apenas para a última mensagem do usuário
+                    if idx == len(st.session_state.messages) - 1 and st.session_state.messages[-1]["role"] == "user":
+                        pass  # O status será mostrado no process_user_input
             elif msg["content"] == "[ÁUDIO]":
                 with st.chat_message("assistant", avatar="💋"):
                     st.markdown(UiService.get_chat_audio_player(), unsafe_allow_html=True)
@@ -686,6 +713,10 @@ class ChatService:
     def process_user_input(conn):
         ChatService.display_chat_history()
 
+        # Mostra "Visualizado" para a última mensagem do usuário
+        if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
+            UiService.show_viewed_status()
+
         if not st.session_state.get("audio_sent") and st.session_state.chat_started:
             st.session_state.messages.append({"role": "assistant", "content": "[ÁUDIO]"})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", "[ÁUDIO]")
@@ -705,22 +736,24 @@ class ChatService:
 
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             if st.session_state.request_count > Config.MAX_REQUESTS_PER_SESSION:
-                final_offer_message = {"text": "Parece que você está gostando da nossa conversa... que tal continuar isso no VIP? Tenho muito mais para te mostrar lá 😉", "cta": {"show": True, "label": "QUERO SER VIP! 💖", "target": "offers"}}
+                final_offer_message = {
+                    "text": "Parece que você está gostando da nossa conversa... que tal continuar isso no VIP? Tenho muito mais para te mostrar lá 😉",
+                    "cta": {"show": True, "label": "QUERO SER VIP! 💖", "target": "offers"}
+                }
                 st.session_state.messages.append({"role": "assistant", "content": json.dumps(final_offer_message)})
                 DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(final_offer_message))
                 save_persistent_data()
                 st.rerun()
                 return
 
-            # Mostra o efeito de digitação antes de obter a resposta
-            typing_placeholder = st.empty()
-            with typing_placeholder:
-                UiService.show_typing_effect()
+            # Mostra o status "Digitando..." antes de processar a resposta
+            typing_time = UiService.show_typing_status()
+            
+            # Tempo adicional aleatório para simular o "processamento"
+            additional_delay = random.uniform(0.3, 1.2)
+            time.sleep(additional_delay)
             
             resposta_ia = ApiService.ask_gemini(st.session_state.messages[-1]["content"], st.session_state.session_id, conn)
-            
-            # Remove o placeholder de digitação
-            typing_placeholder.empty()
             
             st.session_state.messages.append({"role": "assistant", "content": json.dumps(resposta_ia)})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(resposta_ia))
