@@ -134,6 +134,14 @@ class Config:
     ]
     LOGO_URL = "https://i.ibb.co/LX7x3tcB/Logo-Golden-Pepper-Letreiro-1.png"
 
+    # Respostas de fallback se a API falhar
+    FALLBACK_RESPONSES = [
+        "Adoro quando você me conta coisas... qual sua maior fantasia? 😈",
+        "Você me deixa curiosa... o que mais você quer saber sobre mim? 💋",
+        "Estou aqui toda sua... me diz o que te excita mais...",
+        "Quero te conhecer melhor... qual seu desejo secreto? 😉"
+    ]
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 # ======================
@@ -360,68 +368,51 @@ class ApiService:
 
     @staticmethod
     def _call_gemini_api(prompt: str, session_id: str, conn) -> dict:
-        # Verifica se houve erro recente para evitar loops
+        # Evita chamar a API se houve erro recente
         if 'last_error_time' in st.session_state:
             elapsed = time.time() - st.session_state.last_error_time
-            if elapsed < 30:  # Espera 30 segundos após um erro
+            if elapsed < 30:  # Cooldown de 30 segundos
                 return {
-                    "text": "Estou tendo alguns probleminhas técnicos... Volto em instantes! 💋",
+                    "text": random.choice(Config.FALLBACK_RESPONSES),
                     "cta": {"show": False}
                 }
-        
-        time.sleep(random.uniform(1.5, 3.0))
-        status_container = st.empty()
-        UiService.show_status_effect(status_container, "viewed")
-        UiService.show_status_effect(status_container, "typing")
-        
-        conversation_history = ChatService.format_conversation_history(st.session_state.messages)
-        headers = {'Content-Type': 'application/json'}
-        data = {
-            "contents": [{
-                "role": "user",
-                "parts": [{"text": f"{Persona.NICOLE}\n\nHistórico da Conversa:\n{conversation_history}\n\nÚltima mensagem do cliente: '{prompt}'\n\nResponda APENAS em JSON."}]
-            }],
-            "generationConfig": {"temperature": 0.8, "topP": 0.85, "topK": 40}
-        }
-        
+
         try:
-            response = requests.post(Config.API_URL, headers=headers, json=data, timeout=Config.REQUEST_TIMEOUT)
+            # Tentativa normal de chamar a API
+            response = requests.post(
+                Config.API_URL,
+                headers={'Content-Type': 'application/json'},
+                json={
+                    "contents": [{
+                        "role": "user",
+                        "parts": [{"text": f"{Persona.NICOLE}\n\nHistórico:\n{ChatService.format_conversation_history(st.session_state.messages)}\n\nCliente: '{prompt}'\n\nResponda em JSON."}]
+                    }],
+                    "generationConfig": {"temperature": 0.8, "topP": 0.85}
+                },
+                timeout=Config.REQUEST_TIMEOUT
+            )
             response.raise_for_status()
-            
-            # Limpa o estado de erro se a requisição foi bem-sucedida
+
+            # Se a API responder, limpa o estado de erro
             if 'last_error_time' in st.session_state:
                 del st.session_state.last_error_time
                 save_persistent_data()
+
+            # Processa a resposta normalmente...
+            resposta = json.loads(response.json()["candidates"][0]["content"]["parts"][0]["text"])
+            return resposta
+
+        except Exception as e:
+            # Log do erro (invisível para o usuário)
+            print(f"Erro na API: {str(e)}")
             
-            gemini_response_raw = response.json().get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-            
-            try:
-                json_str = gemini_response_raw.split('```json')[1].split('```')[0].strip() if '```json' in gemini_response_raw else gemini_response_raw
-                resposta = json.loads(json_str)
-                
-                if resposta.get("cta", {}).get("show", False):
-                    if not CTAEngine.should_show_cta(st.session_state.messages):
-                        resposta["cta"]["show"] = False
-                    else:
-                        st.session_state.last_cta_time = time.time()
-                else:
-                    if CTAEngine.should_show_cta(st.session_state.messages):
-                        resposta = CTAEngine.generate_strong_cta_response(prompt)
-                        st.session_state.last_cta_time = time.time()
-                
-                return resposta
-            except (json.JSONDecodeError, IndexError) as e:
-                st.warning(f"Resposta da IA não foi um JSON válido, usando fallback: {e}")
-                return CTAEngine.generate_strong_cta_response(prompt)
-                
-        except requests.exceptions.RequestException as e:
-            st.error(f"🚨 Erro na comunicação com a Nicole: {str(e)}")
+            # Ativa o cooldown e salva o estado
             st.session_state.last_error_time = time.time()
             save_persistent_data()
             
-            # Retorna uma mensagem de erro que não causa loop
+            # Retorna uma resposta alternativa
             return {
-                "text": "Estou com uns probleminhas técnicos agora... Mas já estou resolvendo! Enquanto isso, me conta mais sobre você 😊",
+                "text": random.choice(Config.FALLBACK_RESPONSES),
                 "cta": {"show": False}
             }
 
