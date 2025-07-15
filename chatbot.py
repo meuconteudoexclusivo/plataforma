@@ -44,61 +44,76 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: linear-gradient(180deg, #1A0033 0%, #3D0066 100%); /* Fundo degradê vibrante do roxo escuro ao roxo mais claro */
-        color: #F8F8F8; /* Cor do texto principal, quase branco */
+        background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 100%);
+        color: #f0e6ff;
     }
-    /* Estilos globais para botões de CTA primários - Ouro e Rosa/Roxo */
+    /* Estilos globais para botões de CTA primários */
     div.stButton > button:first-child {
-        background: linear-gradient(90deg, #FFD700, #FF66B3, #9933FF) !important; /* Degradê do ouro ao rosa e roxo */
-        color: #1A0033 !important; /* Texto em roxo escuro para contraste no ouro */
+        background: linear-gradient(90deg, #ffb347, #ff6b6b, #9d4edd) !important;
+        color: #1A0033 !important;
         border: none !important;
-        border-radius: 30px !important; /* Mais arredondado, convidativo */
+        border-radius: 30px !important;
         padding: 12px 30px !important;
         font-weight: bold !important;
         font-size: 1.1em !important;
         transition: all 0.3s ease-in-out !important;
-        box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4) !important; /* Sombra dourada */
+        box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4) !important;
         cursor: pointer;
     }
     div.stButton > button:first-child:hover {
         transform: translateY(-3px) scale(1.02) !important;
-        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.6) !important; /* Sombra dourada mais intensa */
+        box-shadow: 0 10px 25px rgba(255, 215, 0, 0.6) !important;
         filter: brightness(1.1);
     }
-    /* Estilos para botões secundários - tons de rosa/roxo mais suaves */
+    /* Estilos para botões secundários */
     .stButton button {
-        background: rgba(255, 102, 179, 0.15) !important; /* Tom mais suave de rosa transparente */
-        color: #FF66B3 !important; /* Cor do texto rosa vibrante */
-        border: 1px solid #FF66B3 !important;
+        background: rgba(126, 91, 239, 0.15) !important;
+        color: #7e5bef !important;
+        border: 1px solid #7e5bef !important;
         transition: all 0.3s ease-in-out !important;
         border-radius: 10px !important;
         padding: 8px 15px !important;
     }
     .stButton button:hover {
-        background: rgba(255, 102, 179, 0.3) !important;
+        background: rgba(126, 91, 239, 0.3) !important;
         transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(255, 102, 179, 0.3) !important;
+        box-shadow: 0 2px 8px rgba(126, 91, 239, 0.3) !important;
     }
-    /* Estilo para input de chat - Elegante e discreto */
+    /* Estilo para input de chat */
     div[data-testid="stChatInput"] {
-        background: rgba(255, 102, 179, 0.08) !important; /* Fundo levemente rosado transparente */
-        border: 1px solid #FF66B3 !important; /* Borda rosa vibrante */
-        border-radius: 25px; /* Bordas arredondadas */
+        background: rgba(126, 91, 239, 0.12) !important;
+        border: 1px solid #7e5bef !important;
+        border-radius: 25px;
         padding: 8px 15px;
-        color: #F8F8F8; /* Cor do texto digitado */
+        color: #f8f2ff;
     }
     div[data-testid="stChatInput"] > label > div {
-        color: #FF66B3; /* Cor do texto do label (placeholder) */
+        color: #7e5bef;
     }
     div[data-testid="stChatInput"] > div > div > input {
-        color: #F8F8F8 !important; /* Cor do texto digitado */
+        color: #f8f2ff !important;
     }
     /* Estilo para indicador de calor */
     .heat-bar {
         height: 10px;
         border-radius: 5px;
         margin: 8px 0;
-        background: linear-gradient(90deg, #1A0033, #FF0066, #FF0000);
+        background: linear-gradient(90deg, #1a0a2e, #ff6b6b, #ff0000);
+    }
+    /* Mensagens do usuário */
+    [data-testid="stChatMessage"]:has([aria-label="user"]) {
+        background: rgba(92, 70, 156, 0.25) !important;
+        border-left: 3px solid #7e5bef !important;
+    }
+    /* Mensagens da Nicole */
+    [data-testid="stChatMessage"]:has([aria-label="assistant"]) {
+        background: rgba(126, 91, 239, 0.15) !important;
+        border-left: 3px solid #ff66b3 !important;
+    }
+    /* Sidebar */
+    .st-emotion-cache-6qob1r {
+        background: rgba(26, 10, 46, 0.85) !important;
+        backdrop-filter: blur(5px) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -107,13 +122,10 @@ st.markdown("""
 # CONSTANTES E CONFIGURAÇÕES SECRETAS
 # ======================
 class Config:
-    # A CHAVE DA API NUNCA DEVE SER EXPOSTA DIRETAMENTE NO CÓDIGO FONTE EM PRODUÇÃO!
-    # Para um ambiente real, use o sistema de secrets do Streamlit ou variáveis de ambiente.
-    # Ex: API_KEY = st.secrets.get("GEMINI_API_KEY", "SUA_CHAVE_PADRAO_AQUI")
     API_KEY = "AIzaSyB8FxDvlfY6SD83t9aZTb_ppj3NQy64Hu8"
     API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
-    # Links de Checkout - Projetados para a conversão máxima
+    # Links de Checkout
     CHECKOUT_START = "https://pay.risepay.com.br/Pay/34a7832016d641658d11e6193ef412a1"
     CHECKOUT_PREMIUM = "https://pay.risepay.com.br/Pay/94e264761df54c49b46ee7d16b97959f"
     CHECKOUT_EXTREME = "https://pay.risepay.com.br/Pay/f360613093db4f19ac8bd373791ebf4c"
@@ -121,7 +133,7 @@ class Config:
     CHECKOUT_VIP_3MESES = "https://checkout.exemplo.com/vip-3meses-acesso-total"
     CHECKOUT_VIP_1ANO = "https://checkout.exemplo.com/vip-1ano-liberdade-plena"
 
-    # Limites estratégicos para incitar a compra e gerar urgência
+    # Limites estratégicos
     MAX_REQUESTS_PER_SESSION = 15
     REQUEST_TIMEOUT = 45
 
@@ -141,7 +153,7 @@ class Config:
     ]
     LOGO_URL = "https://i.ibb.co/LX7x3tcB/Logo-Golden-Pepper-Letreiro-1.png"
 
-    # Respostas de fallback se a API falhar
+    # Respostas de fallback
     FALLBACK_RESPONSES = [
         "Eae lindo! Tava aqui me arrumando toda pra você... 😉",
         "Hmm... isso é bem excitante hein 💋",
@@ -246,6 +258,33 @@ class NaturalResponses:
             "Adoro conversar assim... me diz, o que você gosta de fazer? 😉",
             "Tô curtindo nosso papo... me conta uma coisa pessoal? 💋"
         ])
+    
+    @staticmethod
+    def add_human_touch(response: str) -> str:
+        """Adiciona pausas e variações naturais ao texto"""
+        # Adiciona reticências estratégicas
+        if random.random() > 0.7:
+            response = response.replace('.', '...', random.randint(1, 2))
+        
+        # Adiciona pausas entre frases
+        phrases = response.split('. ')
+        if len(phrases) > 1:
+            pause_index = random.randint(0, len(phrases)-2)
+            phrases[pause_index] += '...'
+            response = '. '.join(phrases)
+        
+        # Adiciona expressões casuais
+        casual_expressions = [
+            " sabe?", " acho que", " tipo", " assim", 
+            " meio que", " na real", " pra ser sincera"
+        ]
+        if random.random() > 0.8:
+            insert_point = response.find(' ', random.randint(10, len(response)//2))
+            if insert_point != -1:
+                expression = random.choice(casual_expressions)
+                response = response[:insert_point] + expression + response[insert_point:]
+        
+        return response
 
 # ======================
 # PERSONA ATUALIZADA PARA CONVERSA QUENTE
@@ -443,7 +482,7 @@ class ApiService:
     @staticmethod
     def _call_gemini_api(prompt: str, session_id: str, conn) -> dict:
         try:
-            # Formata o histórico de conversa de forma mais eficiente
+            # Formata o histórico de conversa
             history = ChatService.format_conversation_history(st.session_state.messages)
             
             # Novo prompt mais detalhado
@@ -464,6 +503,7 @@ class ApiService:
             6. Mantenha tom pessoal e íntimo
             7. Se receber respostas curtas, faça perguntas abertas
             8. Use emojis naturais (😉, 💋, 😈) para manter tom descontraído
+            9. Responda de forma descontraída, com pausas naturais (...) e expressões coloquiais
             
             Formato da Resposta (JSON): {{"text": "sua_resposta", "cta": {{"show": boolean, "label": "texto", "target": "página"}}}}
             """
@@ -481,7 +521,7 @@ class ApiService:
                         "parts": [{"text": system_prompt}]
                     }],
                     "generationConfig": {
-                        "temperature": 0.9,  # Aumentado para mais variedade
+                        "temperature": 0.9,
                         "topP": 0.95,
                         "maxOutputTokens": 300
                     }
@@ -491,11 +531,15 @@ class ApiService:
             response.raise_for_status()
             
             resposta = json.loads(response.json()["candidates"][0]["content"]["parts"][0]["text"])
+            
+            # Aplicar toques humanos na resposta
+            resposta_text = resposta.get("text", "")
+            resposta["text"] = NaturalResponses.add_human_touch(resposta_text)
+            
             return resposta
 
         except Exception as e:
             print(f"Erro na API: {str(e)}")
-            # Fallbacks mais variados e contextualizados
             fallbacks = [
                 f"Eae lindo! Tô aqui me arrumando toda pra você... 😉 {random.choice(['Me conta mais', 'Só isso? Eu sei que você tem mais pra dizer... 😈', 'Você me deixa louca'])} 😈",
                 f"{random.choice(['Hmm', 'Ah', 'Nossa'])}... {random.choice(['isso é bem excitante', 'você sabe provocar', 'Já pensou se a gente transforma esses elogios em algo real? 😉'])} 💋",
@@ -513,7 +557,7 @@ class UiService:
     @staticmethod
     def get_chat_audio_player():
         return f"""
-        <div style="background: linear-gradient(45deg, #FF66B3, #FF1493); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(255, 20, 147, 0.3);">
+        <div style="background: linear-gradient(45deg, #7e5bef, #9d4edd); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(126, 91, 239, 0.3);">
             <audio controls style="width:100%; height:35px; filter: invert(0.9) sepia(1) saturate(7) hue-rotate(300deg);">
                 <source src="{Config.AUDIO_FILE}" type="audio/mp3">
             </audio>
@@ -526,9 +570,9 @@ class UiService:
         ATENDIDA_DELAY = 2
         call_container = st.empty()
         call_container.markdown("""
-        <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #FF0066; text-align: center; color: white; animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);">
-            <div style="font-size: 3.5rem; color: #FF66B3;">💖</div>
-            <h3 style="color: #FF66B3; margin-bottom: 10px; font-size: 1.8em;">Conectando com Nicole...</h3>
+        <div style="background: linear-gradient(135deg, #1a0a2e, #2d1b4e); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #ff6b6b; text-align: center; color: white; animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);">
+            <div style="font-size: 3.5rem; color: #7e5bef;">💖</div>
+            <h3 style="color: #7e5bef; margin-bottom: 10px; font-size: 1.8em;">Conectando com Nicole...</h3>
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;">
                 <div style="width: 12px; height: 12px; background: #00FF7F; border-radius: 50%; box-shadow: 0 0 8px #00FF7F;"></div>
                 <span style="font-size: 1.1rem; font-weight: bold;">Nicole Online - Te esperando! 🔥</span>
@@ -538,7 +582,7 @@ class UiService:
         """, unsafe_allow_html=True)
         time.sleep(LIGANDO_DELAY)
         call_container.markdown("""
-        <div style="background: linear-gradient(135deg, #1A0033, #3D0066); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #00FF7F; text-align: center; color: white; animation: fadeIn 1s forwards;">
+        <div style="background: linear-gradient(135deg, #1a0a2e, #2d1b4e); border-radius: 25px; padding: 40px; max-width: 350px; margin: 2rem auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 3px solid #00FF7F; text-align: center; color: white; animation: fadeIn 1s forwards;">
             <div style="font-size: 3.5rem; color: #00FF7F;">✓</div>
             <h3 style="color: #00FF7F; margin-bottom: 10px; font-size: 1.8em;">Chamada Atendida! 🎉</h3>
             <p style="font-size: 1.1rem; margin:0; font-weight: bold;">Nicole está ansiosa por você...</p>
@@ -551,17 +595,17 @@ class UiService:
     @staticmethod
     def show_viewed_status():
         """Mostra o status 'Visualizado' com tempo aleatório"""
-        delay = random.uniform(0.5, 2.5)  # Tempo aleatório entre 0.5 e 2.5 segundos
+        delay = random.uniform(0.5, 2.5)
         time.sleep(delay)
         
         container = st.empty()
         container.markdown(
-            '<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; '
-            'background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; '
+            '<div style="color: #ffb3d9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; '
+            'background: rgba(126, 91, 239, 0.1); display: inline-block; margin-left: 15px; '
             'font-style: italic;">Visualizado 👀</div>',
             unsafe_allow_html=True
         )
-        time.sleep(1.5)  # Tempo que o status fica visível
+        time.sleep(1.5)
         container.empty()
 
     @staticmethod
@@ -569,23 +613,28 @@ class UiService:
         """Mostra o status 'Digitando...' com tempo aleatório e efeito visual"""
         container = st.empty()
         
-        # Tempo total aleatório entre 1 e 3 segundos
-        total_time = random.uniform(1.0, 3.0)
+        # Tempo total mais variado (1.5 a 4.5 segundos)
+        total_time = random.uniform(1.5, 4.5)
         start_time = time.time()
         
         while time.time() - start_time < total_time:
             # Efeito de pontos animados
             dots = "." * (int((time.time() - start_time) * 3) % 4)
             container.markdown(
-                f'<div style="color: #FFB3D9; font-size: 0.9em; padding: 4px 12px; border-radius: 15px; '
-                f'background: rgba(255, 102, 179, 0.1); display: inline-block; margin-left: 15px; '
-                f'font-style: italic;">Digitando{dots}</div>',
+                f'<div style="display: flex; align-items: center; color: #ffb3d9; font-size: 0.9em;">'
+                f'<div style="margin-right: 8px;">Digitando{dots}</div>'
+                f'<div style="display: flex; gap: 3px;">'
+                f'<div style="width: 6px; height: 6px; background: #7e5bef; border-radius: 50%; animation: bounce 0.6s infinite alternate;"></div>'
+                f'<div style="width: 6px; height: 6px; background: #7e5bef; border-radius: 50%; animation: bounce 0.6s infinite alternate 0.2s;"></div>'
+                f'<div style="width: 6px; height: 6px; background: #7e5bef; border-radius: 50%; animation: bounce 0.6s infinite alternate 0.4s;"></div>'
+                f'</div></div>'
+                f'<style>@keyframes bounce {{ 0% {{ transform: translateY(0); }} 100% {{ transform: translateY(-3px); }} }}</style>',
                 unsafe_allow_html=True
             )
-            time.sleep(0.2)
+            time.sleep(0.15)
         
         container.empty()
-        return total_time  # Retorna o tempo total para possível uso
+        return total_time
 
     @staticmethod
     def age_verification():
@@ -601,7 +650,7 @@ class UiService:
     def setup_sidebar():
         with st.sidebar:
             st.markdown(f'<div class="sidebar-logo-container"><img src="{Config.LOGO_URL}" class="sidebar-logo" alt="Logo"></div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Nicole"><h3 style="color: #FF66B3; margin-top: 15px;">Nicole Saheb Premium VIP</h3><p style="font-size: 0.9em; color: #FFB3D9;">Sua musa particular...</p></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Nicole"><h3 style="color: #7e5bef; margin-top: 15px;">Nicole Saheb Premium VIP</h3><p style="font-size: 0.9em; color: #d0c1ff;">Sua musa particular...</p></div>', unsafe_allow_html=True)
             st.markdown("---")
             menu_options = {"Início Quente": "home", "Minha Galeria Privada": "gallery", "Chat Íntimo": "chat", "Ofertas Exclusivas": "offers"}
             for option, page in menu_options.items():
@@ -614,12 +663,12 @@ class UiService:
             
             # Indicador de calor na sidebar
             heat_level = st.session_state.get('heat_level', 0)
-            heat_color = "#FF66B3" if heat_level < 60 else "#FF0066" if heat_level < 80 else "#FF0000"
+            heat_color = "#7e5bef" if heat_level < 60 else "#ff6b6b" if heat_level < 80 else "#ff0000"
             
             st.markdown(f"""
-            <div style="background: rgba(255, 20, 147, 0.15); padding: 12px; border-radius: 10px; 
+            <div style="background: rgba(126, 91, 239, 0.15); padding: 12px; border-radius: 10px; 
                         text-align: center; margin-bottom: 15px; border: 1px solid {heat_color};">
-                <p style="margin:0; color: #FFB3D9;">Nível de Conexão:</p>
+                <p style="margin:0; color: #d0c1ff;">Nível de Conexão:</p>
                 <div style="background: linear-gradient(90deg, {heat_color} 0%, {heat_color} {heat_level}%, #333 {heat_level}%, #333 100%); 
                             height: 10px; border-radius: 5px; margin: 8px 0;"></div>
                 <p style="margin:0; color: {heat_color}; font-weight: bold; font-size: 1.1em;">
@@ -628,7 +677,7 @@ class UiService:
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown(f'<div style="background: rgba(255, 20, 147, 0.15); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #FF66B3;"><p style="margin:0; color: #FFB3D9;">Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p><progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:8px;"></progress></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background: rgba(126, 91, 239, 0.15); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #7e5bef;"><p style="margin:0; color: #d0c1ff;">Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p><progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:8px;"></progress></div>', unsafe_allow_html=True)
             if st.button("QUERO SER VIP AGORA!", use_container_width=True, type="primary", key="sidebar_cta_button"):
                 st.session_state.current_page = "offers"
                 save_persistent_data()
@@ -648,7 +697,7 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #FF66B3;">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="text-align: center; color: #7e5bef;">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -659,8 +708,8 @@ class NewPages:
     @staticmethod
     def show_home_page():
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1A0033, #3D0066); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #FF0066;">
-            <h1 style="color: #FF66B3; font-size: 3.5em;">Nicole Saheb 💖</h1>
+        <div style="background: linear-gradient(135deg, #1a0a2e, #2d1b4e); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #ff6b6b;">
+            <h1 style="color: #7e5bef; font-size: 3.5em;">Nicole Saheb 💖</h1>
             <p style="font-size: 1.4em;">Descubra o prazer de um bom conteúdo quente, exclusivo e sem censura.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -686,9 +735,9 @@ class NewPages:
             offer_msg = "Você me deixou com MUITO tesão... escolha seu pacote e vamos continuar isso no VIP! 😈💦"
         
         st.markdown(f"""
-        <div style="text-align: center; padding: 20px; background: rgba(255, 102, 179, 0.15); 
-                    border-radius: 15px; margin-bottom: 30px; border: 2px solid #FF0066;">
-            <h2 style="color: #FF66B3;">Acesse e não se arrependerá! 😈</h2>
+        <div style="text-align: center; padding: 20px; background: rgba(126, 91, 239, 0.15); 
+                    border-radius: 15px; margin-bottom: 30px; border: 2px solid #ff6b6b;">
+            <h2 style="color: #7e5bef;">Acesse e não se arrependerá! 😈</h2>
             <p>{offer_msg}</p>
             <p>Qual é o tamanho do seu pacote?</p>
         </div>
@@ -697,16 +746,16 @@ class NewPages:
         # Pacotes
         cols = st.columns(3)
         packages = [
-            {"name": "START 🔥", "price": "R$ 9,90", "color": "#FF66B3", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
-            {"name": "PREMIUM 💜", "price": "R$ 39,90", "color": "#9933FF", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
-            {"name": "EXTREME 😈", "price": "R$ 69,00", "color": "#FF0066", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
+            {"name": "START 🔥", "price": "R$ 9,90", "color": "#ff6b6b", "link": Config.CHECKOUT_START, "features": ["10 Fotos Provocantes", "3 Vídeos Íntimos"]},
+            {"name": "PREMIUM 💜", "price": "R$ 39,90", "color": "#9d4edd", "link": Config.CHECKOUT_PREMIUM, "features": ["20 Fotos EXCLUSIVAS", "5 Vídeos Premium", "Conteúdo Bônus"]},
+            {"name": "EXTREME 😈", "price": "R$ 69,00", "color": "#ff0000", "link": Config.CHECKOUT_EXTREME, "features": ["30 Fotos ULTRA", "10 Vídeos Exclusivos", "Acesso Antecipado"]}
         ]
 
         for i, col in enumerate(cols):
             with col:
                 pkg = packages[i]
                 st.markdown(f"""
-                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(26, 0, 51, 0.7);">
+                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(26, 10, 46, 0.7);">
                     <div style="margin-bottom: 15px;">
                         <h3 style="color: {pkg['color']}; margin: 0;">{pkg['name']}</h3>
                         <div style="font-size: 1.8em; font-weight: bold; color: {pkg['color']};">{pkg['price']}</div>
@@ -720,14 +769,14 @@ class NewPages:
         
         # Countdown
         st.markdown("""
-        <div style="border: 2px solid #FFD700; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
-            <h4 style="color: #FFD700; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
+        <div style="border: 2px solid #ffb347; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
+            <h4 style="color: #ffb347; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
             <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
                 <li>Video pessoal exclusivo</li>
                 <li>Chamada de 5 minutos comigo</li>
             </ul>
-            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #FFD700;">23:59:59</div>
+            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffb347;">23:59:59</div>
         </div>
         """, unsafe_allow_html=True)
         st.components.v1.html("""
@@ -833,33 +882,24 @@ class ChatService:
     @staticmethod
     def simulate_human_response_time(response_length: int) -> float:
         """Calcula um tempo de resposta natural baseado no comprimento da resposta"""
-        # Base: 0.5 segundos por palavra (estimando 5 letras por palavra)
         words = response_length / 5
         base_time = words * 0.5
         
-        # Fatores de ajuste:
-        # - Respostas mais curtas têm tempo mínimo
-        # - Respostas mais longas têm tempo proporcional
-        # - Adiciona variação aleatória para parecer humano
-        min_time = 1.5  # Tempo mínimo para qualquer resposta
-        max_time = 7.0  # Tempo máximo para respostas muito longas
+        min_time = 1.5
+        max_time = 7.0
         
-        # Tempo base com variação de 30%
         response_time = base_time * random.uniform(0.7, 1.3)
         
-        # Limites mínimo e máximo
         return max(min_time, min(response_time, max_time))
 
     @staticmethod
     def process_user_input(conn):
         ChatService.display_chat_history()
 
-        # Mostra "Visualizado" para a última mensagem do usuário
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             UiService.show_viewed_status()
 
         if not st.session_state.get("audio_sent") and st.session_state.chat_started:
-            # Simular tempo de resposta para o áudio
             time.sleep(random.uniform(1.5, 2.5))
             st.session_state.messages.append({"role": "assistant", "content": "[ÁUDIO]"})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", "[ÁUDIO]")
@@ -879,7 +919,6 @@ class ChatService:
 
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             if st.session_state.request_count > Config.MAX_REQUESTS_PER_SESSION:
-                # Tempo de resposta para oferta final
                 time.sleep(random.uniform(2.0, 3.0))
                 final_offer_message = {
                     "text": "Parece que você está gostando da nossa conversa... que tal continuar isso no VIP? Tenho muito mais para te mostrar lá 😉",
@@ -900,32 +939,36 @@ class ChatService:
             extra_thinking_time = random.uniform(0.5, 1.5)
             time.sleep(extra_thinking_time)
             
+            # Aumentar variação de tempo de resposta
+            response_delay = random.uniform(1.5, 4.0)
+            
+            # Adicionar variação baseada no heat level
+            if st.session_state.get('heat_level', 0) > 60:
+                response_delay *= 0.7
+            else:
+                response_delay *= 1.3
+            
+            time.sleep(response_delay)
+            
             # Se for a primeira mensagem do usuário
             if len([m for m in st.session_state.messages if m["role"] == "user"]) == 1:
                 resposta_ia = {"text": NaturalResponses.get_greeting_response(), "cta": {"show": False}}
-                # Tempo de resposta mais rápido para primeiras mensagens
                 time.sleep(random.uniform(1.0, 1.8))
                 
             # Se o nível de calor ainda estiver baixo
             elif st.session_state.get('heat_level', 0) < 30:
                 resposta_ia = {"text": NaturalResponses.get_low_heat_response(), "cta": {"show": False}}
-                # Tempo de resposta mais lento para conversas iniciais
                 time.sleep(random.uniform(1.8, 2.5))
                 
             # Se o nível de calor justificar um CTA
             elif HeatLevelSystem.should_show_cta():
                 resposta_ia = CTAEngine.generate_strong_cta_response(user_msg)
-                # Mesclar com follow-up para continuidade
                 resposta_ia["text"] += " " + NaturalResponses.get_follow_up_response()
-                # Tempo de resposta mais rápido para momentos quentes
                 time.sleep(random.uniform(1.0, 1.8))
                 
             # Processamento normal
             else:
                 resposta_ia = ApiService.ask_gemini(user_msg, st.session_state.session_id, conn)
-                # Adicionar calor às respostas da IA
-                resposta_ia["text"] = ChatService.add_heat_to_response(resposta_ia["text"])
-                # Tempo de resposta baseado no comprimento da mensagem
                 response_time = ChatService.simulate_human_response_time(len(resposta_ia["text"]))
                 time.sleep(response_time)
                 
@@ -933,33 +976,6 @@ class ChatService:
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(resposta_ia))
             save_persistent_data()
             st.rerun()
-
-    @staticmethod
-    def add_heat_to_response(response: str) -> str:
-        """Adiciona calor apropriado baseado no nível da sessão"""
-        heat_level = st.session_state.get('heat_level', 0)
-        
-        if heat_level < 30:
-            # Tom leve e descontraído
-            return response + random.choice([" 😉", " 💖", " 😊"])
-            
-        elif heat_level < 60:
-            # Tom flertuoso
-            enhancements = [
-                " Sabe o que eu tô pensando? 😈",
-                " Me conta o que você faria... 💋",
-                f" Tô ficando com vontade de {random.choice(['te mostrar mais', 'saber seus segredos', 'experimentar algo novo'])}... 🔥"
-            ]
-            return response + random.choice(enhancements)
-            
-        else:
-            # Tom explícito
-            hot_phrases = [
-                f" Tô me tocando pensando nisso... 💦",
-                " Só de imaginar fico molhadinha... 😈",
-                f" Queria {random.choice(['te chupar agora', 'sentir você dentro de mim', 'ver você gozar'])}... 🍆💦"
-            ]
-            return response + random.choice(hot_phrases)
 
 # ======================
 # APLICAÇÃO PRINCIPAL
@@ -986,7 +1002,7 @@ def main():
     if not st.session_state.chat_started and st.session_state.current_page == 'chat':
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #FF0066;"><h2 style="color: #FF66B3;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #ff6b6b;"><h2 style="color: #7e5bef;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
             if st.button("CONVERSAR COM NICOLE AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
                 st.session_state.update({'chat_started': True, 'current_page': 'chat', 'audio_sent': False})
                 save_persistent_data()
