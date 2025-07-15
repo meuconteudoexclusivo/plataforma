@@ -442,9 +442,6 @@ class ApiService:
 
     @staticmethod
     def _call_gemini_api(prompt: str, session_id: str, conn) -> dict:
-        # Pequeno atraso aleatório para parecer mais humano
-        time.sleep(random.uniform(0.5, 1.5))
-        
         try:
             # Formata o histórico de conversa de forma mais eficiente
             history = ChatService.format_conversation_history(st.session_state.messages)
@@ -756,7 +753,7 @@ class NewPages:
         """, height=0)
 
 # ======================
-# SERVIÇOS DE CHAT
+# SERVIÇOS DE CHAT (COM TEMPOS NATURAIS)
 # ======================
 class ChatService:
     @staticmethod
@@ -834,6 +831,26 @@ class ChatService:
         return re.sub(r'<[^>]*>', '', user_input)[:500]
 
     @staticmethod
+    def simulate_human_response_time(response_length: int) -> float:
+        """Calcula um tempo de resposta natural baseado no comprimento da resposta"""
+        # Base: 0.5 segundos por palavra (estimando 5 letras por palavra)
+        words = response_length / 5
+        base_time = words * 0.5
+        
+        # Fatores de ajuste:
+        # - Respostas mais curtas têm tempo mínimo
+        # - Respostas mais longas têm tempo proporcional
+        # - Adiciona variação aleatória para parecer humano
+        min_time = 1.5  # Tempo mínimo para qualquer resposta
+        max_time = 7.0  # Tempo máximo para respostas muito longas
+        
+        # Tempo base com variação de 30%
+        response_time = base_time * random.uniform(0.7, 1.3)
+        
+        # Limites mínimo e máximo
+        return max(min_time, min(response_time, max_time))
+
+    @staticmethod
     def process_user_input(conn):
         ChatService.display_chat_history()
 
@@ -842,6 +859,8 @@ class ChatService:
             UiService.show_viewed_status()
 
         if not st.session_state.get("audio_sent") and st.session_state.chat_started:
+            # Simular tempo de resposta para o áudio
+            time.sleep(random.uniform(1.5, 2.5))
             st.session_state.messages.append({"role": "assistant", "content": "[ÁUDIO]"})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", "[ÁUDIO]")
             st.session_state.audio_sent = True
@@ -860,6 +879,8 @@ class ChatService:
 
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             if st.session_state.request_count > Config.MAX_REQUESTS_PER_SESSION:
+                # Tempo de resposta para oferta final
+                time.sleep(random.uniform(2.0, 3.0))
                 final_offer_message = {
                     "text": "Parece que você está gostando da nossa conversa... que tal continuar isso no VIP? Tenho muito mais para te mostrar lá 😉",
                     "cta": {"show": True, "label": "QUERO SER VIP! 💖", "target": "offers"}
@@ -872,29 +893,41 @@ class ChatService:
 
             user_msg = st.session_state.messages[-1]["content"]
             
+            # Mostrar status "digitando..." com tempo variável
+            typing_time = UiService.show_typing_status()
+            
+            # Tempo adicional de "pensamento" baseado no contexto
+            extra_thinking_time = random.uniform(0.5, 1.5)
+            time.sleep(extra_thinking_time)
+            
             # Se for a primeira mensagem do usuário
             if len([m for m in st.session_state.messages if m["role"] == "user"]) == 1:
                 resposta_ia = {"text": NaturalResponses.get_greeting_response(), "cta": {"show": False}}
+                # Tempo de resposta mais rápido para primeiras mensagens
+                time.sleep(random.uniform(1.0, 1.8))
                 
             # Se o nível de calor ainda estiver baixo
             elif st.session_state.get('heat_level', 0) < 30:
                 resposta_ia = {"text": NaturalResponses.get_low_heat_response(), "cta": {"show": False}}
+                # Tempo de resposta mais lento para conversas iniciais
+                time.sleep(random.uniform(1.8, 2.5))
                 
             # Se o nível de calor justificar um CTA
             elif HeatLevelSystem.should_show_cta():
-                typing_time = UiService.show_typing_status()
                 resposta_ia = CTAEngine.generate_strong_cta_response(user_msg)
-                
                 # Mesclar com follow-up para continuidade
                 resposta_ia["text"] += " " + NaturalResponses.get_follow_up_response()
+                # Tempo de resposta mais rápido para momentos quentes
+                time.sleep(random.uniform(1.0, 1.8))
                 
             # Processamento normal
             else:
-                typing_time = UiService.show_typing_status()
                 resposta_ia = ApiService.ask_gemini(user_msg, st.session_state.session_id, conn)
-                
                 # Adicionar calor às respostas da IA
                 resposta_ia["text"] = ChatService.add_heat_to_response(resposta_ia["text"])
+                # Tempo de resposta baseado no comprimento da mensagem
+                response_time = ChatService.simulate_human_response_time(len(resposta_ia["text"]))
+                time.sleep(response_time)
                 
             st.session_state.messages.append({"role": "assistant", "content": json.dumps(resposta_ia)})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(resposta_ia))
