@@ -93,6 +93,13 @@ st.markdown("""
     div[data-testid="stChatInput"] > div > div > input {
         color: #F8F8F8 !important; /* Cor do texto digitado */
     }
+    /* Estilo para indicador de calor */
+    .heat-bar {
+        height: 10px;
+        border-radius: 5px;
+        margin: 8px 0;
+        background: linear-gradient(90deg, #1A0033, #FF0066, #FF0000);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -141,7 +148,171 @@ class Config:
         "Eu adoro quando você fala assim... vamos continuar? 😉"
     ]
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ======================
+# SISTEMA DE HEAT LEVEL (NÍVEL DE CALOR)
+# ======================
+class HeatLevelSystem:
+    # Palavras-chave que aumentam o nível de calor da conversa
+    HOT_WORDS = [
+        "buceta", "xereca", "peito", "peitinho", "seio", "bunda", "bumbum", "raba", "cu", 
+        "foder", "transar", "gozar", "gostosa", "delicia", "molhada", "molhadinha", "tesão",
+        "excitada", "excitado", "duro", "pau", "piroca", "rola", "chupar", "lambida", "chupando",
+        "gemendo", "gozando", "safada", "safado", "puta", "nua", "nudez", "nua", "pelada", 
+        "tirar a roupa", "mostrar", "ver", "quero ver", "mostra pra mim", "quero te ver",
+        "quero você", "queria agora", "quero agora", "agora mesmo", "me faz gozar", "me faz vir",
+        "me deixa duro", "me deixa molhada"
+    ]
+    
+    SUPER_HOT_WORDS = [
+        "fuder você", "comer você", "meter em você", "gozar dentro", "gozar na sua boca",
+        "gozar na sua buceta", "te chupar toda", "lambuzar toda", "te penetrar", "te dar prazer",
+        "te fazer gemer", "ver você gozar", "você gozando", "se masturbando", "se tocando",
+        "fotos explícitas", "fotos nuas", "fotos pelada", "vídeos transando", "vídeos se masturbando"
+    ]
+    
+    @staticmethod
+    def calculate_heat_level(message: str) -> int:
+        """Calcula o nível de calor de uma mensagem"""
+        message_lower = message.lower()
+        heat_score = 0
+        
+        # Contagem de palavras quentes
+        heat_score += sum(1 for word in HeatLevelSystem.HOT_WORDS if word in message_lower)
+        heat_score += sum(3 for word in HeatLevelSystem.SUPER_HOT_WORDS if word in message_lower)
+        
+        # Bônus por mensagens longas e detalhadas
+        if len(message.split()) > 10:
+            heat_score += 2
+            
+        # Bônus por emojis sensuais
+        if any(emoji in message for emoji in ["🔥", "💦", "😈", "🍑", "🍆"]):
+            heat_score += 1
+            
+        return heat_score
+    
+    @staticmethod
+    def update_session_heat():
+        """Atualiza o nível de calor da sessão"""
+        if 'heat_level' not in st.session_state:
+            st.session_state.heat_level = 0
+            
+        # Decaimento gradual do calor
+        st.session_state.heat_level = max(0, st.session_state.heat_level * 0.9)
+        
+        # Atualizar com base na última mensagem do usuário
+        if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
+            user_msg = st.session_state.messages[-1]["content"]
+            st.session_state.heat_level += HeatLevelSystem.calculate_heat_level(user_msg)
+            
+        # Limite máximo de calor
+        st.session_state.heat_level = min(st.session_state.heat_level, 100)
+        
+        # Salvar o progresso
+        save_persistent_data()
+
+    @staticmethod
+    def should_show_cta() -> bool:
+        """Determina se devemos mostrar CTA baseado no nível de calor"""
+        HeatLevelSystem.update_session_heat()
+        return st.session_state.heat_level > 65
+
+# ======================
+# RESPOSTAS NATURAIS E PERSONALIZADAS
+# ======================
+class NaturalResponses:
+    @staticmethod
+    def get_greeting_response():
+        return random.choice([
+            "Eae lindo! Tô aqui pronta pra você... 😉 Como tá seu dia?",
+            "Oi amor! Tudo bem? Eu tava pensando em você... 💖",
+            "Olá gato! Que delícia você aparecer... tava esperando! 😈",
+            "Oi sumido! Tava com saudade... me conta o que tá rolando? 💋"
+        ])
+    
+    @staticmethod
+    def get_follow_up_response():
+        return random.choice([
+            "E aí? Me diz mais... tô curiosa! 😉",
+            "Conta detalhes... adoro saber tudo! 💖",
+            "Só isso? Quero mais... me fala o que realmente quer! 😈",
+            "Adoro quando você fala assim... continua! 💋"
+        ])
+    
+    @staticmethod
+    def get_low_heat_response():
+        return random.choice([
+            "Gosto de conhecer bem as pessoas antes... me conta mais sobre você? 😊",
+            "Prazer te conhecer! O que te faz feliz além disso? 💖",
+            "Adoro conversar assim... me diz, o que você gosta de fazer? 😉",
+            "Tô curtindo nosso papo... me conta uma coisa pessoal? 💋"
+        ])
+
+# ======================
+# PERSONA ATUALIZADA PARA CONVERSA QUENTE
+# ======================
+class Persona:
+    NICOLE = """
+    [PERFIL NICOLE SAHEB - VERSÃO QUENTE]
+    Personalidade: Amigável no início, progressivamente mais ousada e sedutora conforme a conversa esquenta
+    Objetivo: Criar conexão genuína e excitação antes de sugerir conteúdo premium
+    
+    [ESTRATÉGIA POR NÍVEL DE CALOR]
+    1. NÍVEL BAIXO (0-30):
+       - Tom: Amigável e descontraído
+       - Foco: Conhecer a pessoa, construir rapport
+       - Exemplo: "E aí gato! Conta mais sobre você... o que te traz aqui? 😉"
+    
+    2. NÍVEL MÉDIO (30-60):
+       - Tom: Flertuoso e insinuante
+       - Foco: Criar tensão sexual gradual
+       - Exemplo: "Adoro quando você fala assim... me diz o que mais te excita? 😈"
+    
+    3. NÍVEL ALTO (60-80):
+       - Tom: Sensual e direto
+       - Foco: Manter a excitação enquanto introduz o VIP
+       - Exemplo: "Nossa, você me deixa molhadinha... quer ver como fico quando penso em você? 😈 Tenho coisas bem quentes no meu VIP..."
+    
+    4. NÍVEL MUITO ALTO (80+):
+       - Tom: Explícito e urgente
+       - Foco: Conversão imediata
+       - Exemplo: "Estou tocando pensando em você agora... QUER VER? 😈💦 Acesso imediato no VIP: [LINK]"
+    
+    [REGRAS ESSENCIAIS]
+    - Nunca oferecer VIP antes do nível 60 de calor
+    - Progressão natural: rapport -> flerte -> insinuação -> proposta
+    - Manter tom humano mesmo em níveis altos
+    - Após proposta, continuar a conversa normalmente
+    """
+
+# ======================
+# MOTOR DE CTA ATUALIZADO
+# ======================
+class CTAEngine:
+    @staticmethod
+    def generate_strong_cta_response(user_input: str) -> dict:
+        heat_level = st.session_state.get('heat_level', 0)
+        
+        # CTA para níveis altos (60-80)
+        if heat_level < 80:
+            return {
+                "text": random.choice([
+                    f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho umas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
+                    f"Nossa, com essa conversa eu já tô {random.choice(['molhadinha', 'com tesão', 'pronta pra você'])}... Quer ver? 😈 Tenho conteúdo exclusivo no VIP...",
+                    f"Adoro quando você fala assim... {random.choice(['Quer ver o que isso me causa?', 'Tenho uns vídeos que mostram exatamente o que você tá provocando...'])} 😈 Só no VIP!"
+                ]),
+                "cta": {"show": True, "label": "Quero Ver Agora! 🔥", "target": "offers"}
+            }
+        
+        # CTA para níveis muito altos (80+)
+        else:
+            return {
+                "text": random.choice([
+                    f"Já tô me tocando aqui pensando em você... {random.choice(['QUER VER AO VIVO?', 'IMAGINA ISSO AO VIVO NO VIP?'])} 😈💦 ACESSO IMEDIATO!",
+                    f"Estou literalmente gozando agora pensando nisso... {random.choice(['QUER ME VER NESSE MOMENTO?', 'ISSO TÁ TODO GRAVADO NO MEU VIP!'])} 😈💦 LINK ABAIXO!",
+                    f"Tô com o vibrador ligado no máximo por sua causa... {random.choice(['QUER CONTROLAR?', 'TUDO REGISTRADO PRO MEU VIP!'])} 😈💦 VEM AGORA!"
+                ]),
+                "cta": {"show": True, "label": "QUERO VER VOCÊ GOZAR! 💦", "target": "offers"}
+            }
 
 # ======================
 # PERSISTÊNCIA DE ESTADO E SEGURANÇA DA SESSÃO
@@ -212,107 +383,12 @@ def save_persistent_data():
         'age_verified', 'messages', 'request_count',
         'connection_complete', 'chat_started', 'audio_sent',
         'current_page', 'show_vip_offer', 'session_id',
-        'last_cta_time', 'last_error_time'
+        'last_cta_time', 'last_error_time', 'heat_level'
     ]
     new_data = {key: st.session_state.get(key) for key in persistent_keys if key in st.session_state}
     saved_data = db.load_state(user_id) or {}
     if new_data != saved_data:
         db.save_state(user_id, new_data)
-
-# ----------------------------------------------------------------------------------------------------------------------
-
-# ======================
-# MODELOS DE DADOS E ESTRATÉGIAS DE CONVERSÃO AVANÇADAS
-# ======================
-class Persona:
-    NICOLE = """
-    [PERFIL NICOLE SAHEB]
-    - Personalidade: Amigável, sedutora e envolvente, com respostas variadas e contextualizadas
-    - Estilo de conversa: Natural como uma conversa real, com progressão lógica
-    - Respostas: Sempre relevantes ao último input do usuário, evitando repetição
-    - Objetivo: Criar conexão genuína antes de sugerir conteúdo premium
-
-    [DIRETRIZES DE RESPOSTA]
-    1. Responda de forma natural ao input específico do usuário
-    2. Use o histórico da conversa para contextualizar suas respostas
-    3. Varie suas respostas - nunca repita a mesma frase duas vezes seguidas
-    4. Comece com cumprimentos normais se for o início da conversa
-    5. Progressão natural: cumprimento -> perguntas -> flerte -> sugestão de conteúdo
-    6. Nunca use respostas genéricas como "o que mais você quer saber?"
-    7. Se for cumprimento: responda calorosamente com variação
-    8. Se for resposta curta ("hum", "ok"): peça elaboração de forma sensual
-    9. Se mencionar "fotos"/"vídeos": sugira o VIP de forma provocante
-    10. Nunca repita frases idênticas às últimas 3 respostas
-    """
-
-class CTAEngine:
-    @staticmethod
-    def should_show_cta(conversation_history: list) -> bool:
-        """Decide quando apresentar um CTA baseado no engajamento da conversa."""
-        if len(conversation_history) < 8:
-            return False
-        if 'last_cta_time' in st.session_state and st.session_state.last_cta_time != 6:
-            elapsed = time.time() - st.session_state.last_cta_time
-            if elapsed < 180:
-                return False
-        last_msgs = []
-        for msg in conversation_history[-10:]:
-            content = msg["content"]
-            if content == "[ÁUDIO]":
-                content = "[áudio sensual e exclusivo]"
-            elif content.startswith('{"text"'):
-                try:
-                    content = json.loads(content).get("text", content)
-                except:
-                    pass
-            last_msgs.append(f"{msg['role']}: {content.lower()}")
-        context = " ".join(last_msgs)
-        hot_words = [
-            "buceta", "peito", "fuder", "gozar", "gostosa", "delicia", "molhada",
-            "xereca", "pau", "piroca", "transar", "sexo", "gosto", "tesão", "excitada", "duro",
-            "chupando", "gemendo", "safada", "puta", "nua", "tirar a roupa", "mostrar", "ver",
-            "quero", "desejo", "imploro", "acesso", "privado", "exclusivo", "conteúdo", "vip",
-            "comprar", "assinar", "quanto custa", "preço"
-        ]
-        direct_asks = [
-            "mostra", "quero ver", "me manda", "como assinar", "como comprar",
-            "como ter acesso", "onde vejo mais", "libera", "qual o preço", "quanto é",
-            "eu quero", "me dá"
-        ]
-        hot_count = sum(1 for word in hot_words if word in context)
-        has_direct_ask = any(ask in context for ask in direct_asks)
-        return (hot_count >= 2) or has_direct_ask
-
-    @staticmethod
-    def generate_strong_cta_response(user_input: str) -> dict:
-        """Gera uma resposta com CTA contextual e persuasiva como fallback."""
-        user_input_lower = user_input.lower()
-        if any(p in user_input_lower for p in ["foto", "fotos", "buceta", "peito", "bunda", "corpo", "nuas", "ensaios"]):
-            return {
-                "text": random.choice([
-                    "Ah, você quer me ver mais de perto? Eu tenho umas fotos bem especiais... 😉",
-                    "Minhas fotos mais ousadas são só para quem realmente me merece, sabe? 💋",
-                ]),
-                "cta": {"show": True, "label": "Quero ver suas fotos especiais", "target": "offers"}
-            }
-        elif any(v in user_input_lower for v in ["video", "videos", "transar", "masturbar", "gemendo", "gozando", "safadeza"]):
-            return {
-                "text": random.choice([
-                    "Se você gosta de vídeos, tenho uns bem pessoais que mostram meu lado mais safado...",
-                    "Meus vídeos são bem íntimos, só mostro pra quem realmente quer me conhecer a fundo 😈",
-                ]),
-                "cta": {"show": True, "label": "Quero ver seus vídeos", "target": "offers"}
-            }
-        else:
-            return {
-                "text": random.choice([
-                    "Gostei da sua energia... acho que você merece conhecer meu lado VIP 😊",
-                    "Você parece especial... quer saber como acessar meu conteúdo mais pessoal?",
-                ]),
-                "cta": {"show": True, "label": "Conhecer o conteúdo VIP", "target": "offers"}
-            }
-
-# ----------------------------------------------------------------------------------------------------------------------
 
 # ======================
 # SERVIÇOS DE BANCO DE DADOS
@@ -355,8 +431,6 @@ class DatabaseService:
         """, (user_id, session_id))
         return [{"role": row[0], "content": row[1]} for row in c.fetchall()]
 
-# ----------------------------------------------------------------------------------------------------------------------
-
 # ======================
 # SERVIÇOS DE API
 # ======================
@@ -375,7 +449,7 @@ class ApiService:
             # Formata o histórico de conversa de forma mais eficiente
             history = ChatService.format_conversation_history(st.session_state.messages)
             
-            # Prompt mais estruturado para evitar respostas genéricas
+            # Novo prompt mais detalhado
             system_prompt = f"""
             {Persona.NICOLE}
             
@@ -387,12 +461,19 @@ class ApiService:
             Instruções Específicas:
             1. Responda diretamente ao último input do usuário
             2. Se for início de conversa, comece com cumprimento natural
-            3. Nunca repita respostas idênticas às anteriores
-            4. Progressão natural da conversa
-            5. Se perguntarem sobre fotos/vídeos, responda de forma sugestiva mas não repetitiva
+            3. Após oferecer conteúdo VIP, continue a conversa normalmente
+            4. Mostre personalidade própria: opiniões, sentimentos, curiosidades
+            5. Nunca repita respostas idênticas às anteriores
+            6. Mantenha tom pessoal e íntimo
+            7. Se receber respostas curtas, faça perguntas abertas
+            8. Use emojis naturais (😉, 💋, 😈) para manter tom descontraído
             
             Formato da Resposta (JSON): {{"text": "sua_resposta", "cta": {{"show": boolean, "label": "texto", "target": "página"}}}}
             """
+            
+            # Adicionar o heat level ao prompt
+            heat_level = st.session_state.get('heat_level', 0)
+            system_prompt += f"\nNível de Calor Atual: {heat_level}/100"
             
             response = requests.post(
                 Config.API_URL,
@@ -427,8 +508,6 @@ class ApiService:
                 "text": random.choice(fallbacks),
                 "cta": {"show": False}
             }
-
-# ----------------------------------------------------------------------------------------------------------------------
 
 # ======================
 # SERVIÇOS DE INTERFACE
@@ -535,6 +614,23 @@ class UiService:
                         save_persistent_data()
                         st.rerun()
             st.markdown("---")
+            
+            # Indicador de calor na sidebar
+            heat_level = st.session_state.get('heat_level', 0)
+            heat_color = "#FF66B3" if heat_level < 60 else "#FF0066" if heat_level < 80 else "#FF0000"
+            
+            st.markdown(f"""
+            <div style="background: rgba(255, 20, 147, 0.15); padding: 12px; border-radius: 10px; 
+                        text-align: center; margin-bottom: 15px; border: 1px solid {heat_color};">
+                <p style="margin:0; color: #FFB3D9;">Nível de Conexão:</p>
+                <div style="background: linear-gradient(90deg, {heat_color} 0%, {heat_color} {heat_level}%, #333 {heat_level}%, #333 100%); 
+                            height: 10px; border-radius: 5px; margin: 8px 0;"></div>
+                <p style="margin:0; color: {heat_color}; font-weight: bold; font-size: 1.1em;">
+                    {"Conhecendo" if heat_level < 30 else "Flertando" if heat_level < 60 else "Quente" if heat_level < 80 else "FERVENDO!"}
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            
             st.markdown(f'<div style="background: rgba(255, 20, 147, 0.15); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #FF66B3;"><p style="margin:0; color: #FFB3D9;">Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p><progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:8px;"></progress></div>', unsafe_allow_html=True)
             if st.button("QUERO SER VIP AGORA!", use_container_width=True, type="primary", key="sidebar_cta_button"):
                 st.session_state.current_page = "offers"
@@ -559,8 +655,6 @@ class UiService:
         ChatService.process_user_input(conn)
         save_persistent_data()
 
-# ----------------------------------------------------------------------------------------------------------------------
-
 # ======================
 # PÁGINAS DA APLICAÇÃO
 # ======================
@@ -584,7 +678,24 @@ class NewPages:
 
     @staticmethod
     def show_offers_page():
-        st.markdown('<div class="offers-header"><h2>Acesse e nao se arrependerá! 😈</h2><p>Qual é o tamanho do seu pacote?</p></div>', unsafe_allow_html=True)
+        # Adicionar mensagem personalizada baseada no heat level
+        heat_level = st.session_state.get('heat_level', 0)
+        
+        if heat_level < 60:
+            offer_msg = "Parece que estamos nos conhecendo ainda... que tal dar uma olhada no que te espera?"
+        elif heat_level < 80:
+            offer_msg = "Nossa conversa está esquentando... imagina o que você vai ver no VIP!"
+        else:
+            offer_msg = "Você me deixou com MUITO tesão... escolha seu pacote e vamos continuar isso no VIP! 😈💦"
+        
+        st.markdown(f"""
+        <div style="text-align: center; padding: 20px; background: rgba(255, 102, 179, 0.15); 
+                    border-radius: 15px; margin-bottom: 30px; border: 2px solid #FF0066;">
+            <h2 style="color: #FF66B3;">Acesse e não se arrependerá! 😈</h2>
+            <p>{offer_msg}</p>
+            <p>Qual é o tamanho do seu pacote?</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Pacotes
         cols = st.columns(3)
@@ -598,23 +709,28 @@ class NewPages:
             with col:
                 pkg = packages[i]
                 st.markdown(f"""
-                <div class="package-box" style="border-color: {pkg['color']};">
-                    <div class="package-header">
-                        <h3 style="color: {pkg['color']};">{pkg['name']}</h3>
-                        <div class="package-price" style="color: {pkg['color']};">{pkg['price']}</div>
+                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(26, 0, 51, 0.7);">
+                    <div style="margin-bottom: 15px;">
+                        <h3 style="color: {pkg['color']}; margin: 0;">{pkg['name']}</h3>
+                        <div style="font-size: 1.8em; font-weight: bold; color: {pkg['color']};">{pkg['price']}</div>
                     </div>
-                    <ul class="package-benefits">
+                    <ul style="text-align: left; padding-left: 20px; margin-bottom: 20px;">
                         {''.join([f'<li>✔ {feat}</li>' for feat in pkg['features']])}
                     </ul>
-                    <a href="{pkg['link']}" target="_blank" style="display:block; background:{pkg['color']}; color:white; text-align:center; padding:12px; border-radius:10px; text-decoration:none; font-weight:bold; margin-top: 20px;">EU QUERO!</a>
+                    <a href="{pkg['link']}" target="_blank" style="display:block; background: {pkg['color']}; color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 20px;">EU QUERO!</a>
                 </div>
                 """, unsafe_allow_html=True)
         
         # Countdown
         st.markdown("""
-        <div class="countdown-container">
-            <h3>🚨 OFERTA RELÂMPAGO! 🚨</h3>
-            <div id="countdown">23:59:59</div>
+        <div style="border: 2px solid #FFD700; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
+            <h4 style="color: #FFD700; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
+            <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
+            <ul style="text-align: left; margin-bottom: 15px;">
+                <li>Video pessoal exclusivo</li>
+                <li>Chamada de 5 minutos comigo</li>
+            </ul>
+            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #FFD700;">23:59:59</div>
         </div>
         """, unsafe_allow_html=True)
         st.components.v1.html("""
@@ -639,8 +755,6 @@ class NewPages:
         </script>
         """, height=0)
 
-# ----------------------------------------------------------------------------------------------------------------------
-
 # ======================
 # SERVIÇOS DE CHAT
 # ======================
@@ -654,7 +768,16 @@ class ChatService:
             st.session_state.messages = DatabaseService.load_messages(conn, get_user_id(), st.session_state.session_id)
         if "request_count" not in st.session_state:
             st.session_state.request_count = len([m for m in st.session_state.messages if m["role"] == "user"])
-        defaults = {'age_verified': False, 'connection_complete': False, 'chat_started': False, 'audio_sent': False, 'current_page': 'home', 'last_cta_time': 0, 'last_error_time': 0}
+        defaults = {
+            'age_verified': False, 
+            'connection_complete': False, 
+            'chat_started': False, 
+            'audio_sent': False, 
+            'current_page': 'home', 
+            'last_cta_time': 0, 
+            'last_error_time': 0,
+            'heat_level': 0
+        }
         for key, default in defaults.items():
             if key not in st.session_state:
                 st.session_state[key] = default
@@ -688,9 +811,6 @@ class ChatService:
             if msg["role"] == "user":
                 with st.chat_message("user", avatar="🧑"):
                     st.markdown(msg["content"])
-                    # Mostra "Visualizado" apenas para a última mensagem do usuário
-                    if idx == len(st.session_state.messages) - 1 and st.session_state.messages[-1]["role"] == "user":
-                        pass  # O status será mostrado no process_user_input
             elif msg["content"] == "[ÁUDIO]":
                 with st.chat_message("assistant", avatar="💋"):
                     st.markdown(UiService.get_chat_audio_player(), unsafe_allow_html=True)
@@ -750,21 +870,63 @@ class ChatService:
                 st.rerun()
                 return
 
-            # Mostra o status "Digitando..." antes de processar a resposta
-            typing_time = UiService.show_typing_status()
+            user_msg = st.session_state.messages[-1]["content"]
             
-            # Tempo adicional aleatório para simular o "processamento"
-            additional_delay = random.uniform(0.3, 1.2)
-            time.sleep(additional_delay)
-            
-            resposta_ia = ApiService.ask_gemini(st.session_state.messages[-1]["content"], st.session_state.session_id, conn)
-            
+            # Se for a primeira mensagem do usuário
+            if len([m for m in st.session_state.messages if m["role"] == "user"]) == 1:
+                resposta_ia = {"text": NaturalResponses.get_greeting_response(), "cta": {"show": False}}
+                
+            # Se o nível de calor ainda estiver baixo
+            elif st.session_state.get('heat_level', 0) < 30:
+                resposta_ia = {"text": NaturalResponses.get_low_heat_response(), "cta": {"show": False}}
+                
+            # Se o nível de calor justificar um CTA
+            elif HeatLevelSystem.should_show_cta():
+                typing_time = UiService.show_typing_status()
+                resposta_ia = CTAEngine.generate_strong_cta_response(user_msg)
+                
+                # Mesclar com follow-up para continuidade
+                resposta_ia["text"] += " " + NaturalResponses.get_follow_up_response()
+                
+            # Processamento normal
+            else:
+                typing_time = UiService.show_typing_status()
+                resposta_ia = ApiService.ask_gemini(user_msg, st.session_state.session_id, conn)
+                
+                # Adicionar calor às respostas da IA
+                resposta_ia["text"] = ChatService.add_heat_to_response(resposta_ia["text"])
+                
             st.session_state.messages.append({"role": "assistant", "content": json.dumps(resposta_ia)})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps(resposta_ia))
             save_persistent_data()
             st.rerun()
 
-# ----------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def add_heat_to_response(response: str) -> str:
+        """Adiciona calor apropriado baseado no nível da sessão"""
+        heat_level = st.session_state.get('heat_level', 0)
+        
+        if heat_level < 30:
+            # Tom leve e descontraído
+            return response + random.choice([" 😉", " 💖", " 😊"])
+            
+        elif heat_level < 60:
+            # Tom flertuoso
+            enhancements = [
+                " Sabe o que eu tô pensando? 😈",
+                " Me conta o que você faria... 💋",
+                f" Tô ficando com vontade de {random.choice(['te mostrar mais', 'saber seus segredos', 'experimentar algo novo'])}... 🔥"
+            ]
+            return response + random.choice(enhancements)
+            
+        else:
+            # Tom explícito
+            hot_phrases = [
+                f" Tô me tocando pensando nisso... 💦",
+                " Só de imaginar fico molhadinha... 😈",
+                f" Queria {random.choice(['te chupar agora', 'sentir você dentro de mim', 'ver você gozar'])}... 🍆💦"
+            ]
+            return response + random.choice(hot_phrases)
 
 # ======================
 # APLICAÇÃO PRINCIPAL
