@@ -18,7 +18,7 @@ from functools import lru_cache
 # CONFIGURAÇÃO DE PÁGINA IRRESISTÍVEL DO STREAMLIT
 # ======================
 st.set_page_config(
-    page_title="Nicole Saheb – Acesse Restrito!",
+    page_title="Nicole Saheb – Acesso Restrito!",
     page_icon="💖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -143,9 +143,9 @@ class Config:
 
     # Respostas de fallback se a API falhar
     FALLBACK_RESPONSES = [
-        "Eae lindo! Tô aqui me arrumando toda pra você... 😉",
-        "Hmm... isso é bem excitante 💋",
-        "Eu adoro quando você fala assim... vamos continuar? 😉"
+        "Eae lindo! Tava aqui me arrumando toda pra você... 😉",
+        "Hmm... isso é bem excitante hein 💋",
+        "Eu adoro ler isso... vamos continuar? 😉"
     ]
 
 # ======================
