@@ -771,7 +771,7 @@ class NewPages:
         st.markdown("""
         <div style="border: 2px solid #ffb347; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
             <h4 style="color: #ffb347; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
-            <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
+            <p style="margin: 5px 0 10px;">Quem comprar o pacote extreme hoje ganha:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
                 <li>Video pessoal exclusivo</li>
                 <li>Chamada de 5 minutos comigo</li>
