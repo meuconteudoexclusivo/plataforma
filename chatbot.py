@@ -356,7 +356,7 @@ class CTAEngine:
         if heat_level < 80:
             return {
                 "text": random.choice([
-                    f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho unas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
+                    f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho umas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
                     f"Nossa, com essa conversa eu já tô {random.choice(['molhadinha', 'com tesão', 'pronta pra você'])}... Quer ver? 😈 Tenho conteúdo exclusivo no VIP...",
                     f"Adoro quando você fala assim... {random.choice(['Quer ver o que isso me causa?', 'Tenho uns vídeos que mostram exatamente o que você tá provocando...'])} 😈 Só no VIP!"
                 ]),
