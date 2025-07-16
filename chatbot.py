@@ -44,7 +44,7 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: linear-gradient(180deg, #8B0000 0%, #450000 100%) !important; /* Vermelho sangue */
+        background: linear-gradient(180deg, #8B0000 0%, #450000 100%) !important;
         color: #f0e6ff;
     }
     /* Estilos globais para botões de CTA primários */
@@ -81,17 +81,17 @@ st.markdown("""
     }
     /* Estilo para input de chat */
     div[data-testid="stChatInput"] {
-        background: rgba(126, 91, 239, 0.12) !important;
-        border: 1px solid #7e5bef !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid #ff6b6b !important;
         border-radius: 25px;
         padding: 8px 15px;
         color: #f8f2ff;
     }
     div[data-testid="stChatInput"] > label > div {
-        color: #7e5bef;
+        color: #ffb347;
     }
     div[data-testid="stChatInput"] > div > div > input {
-        color: #f8f2ff !important;
+        color: #ffffff !important;
     }
     /* Estilo para indicador de calor */
     .heat-bar {
@@ -105,27 +105,36 @@ st.markdown("""
         background: rgba(92, 70, 156, 0.25) !important;
         border-left: 3px solid #7e5bef !important;
     }
-    /* Mensagens da Nicole */
+    /* Mensagens da Nicole - FUNDO VISÍVEL */
     [data-testid="stChatMessage"]:has([aria-label="assistant"]) {
-        background: rgba(126, 91, 239, 0.15) !important;
+        background: rgba(26, 0, 51, 0.7) !important;
         border-left: 3px solid #ff66b3 !important;
+        border-radius: 0 15px 15px 0;
+        padding: 10px;
+        margin: 5px 0;
     }
-    /* Sidebar - Roxo escuro */
+    /* Sidebar - Roxo escuro SEM MULTIPLAS CAMADAS */
     .st-emotion-cache-6qob1r {
         background: #1a0033 !important;
         backdrop-filter: blur(5px) !important;
+        border-right: 1px solid #ff6b6b !important;
     }
-    /* Container da sidebar */
+    /* Remoção de sobreposições na sidebar */
     .sidebar-container {
-        background: linear-gradient(to bottom, #1a0033, #2d1b4e);
-        padding: 20px;
-        border-radius: 0 15px 15px 0;
-        height: 100vh;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: -1;
+        background: transparent !important;
+        padding: 0 !important;
+    }
+    /* Ajuste de cores para melhor contraste */
+    .sidebar-header h3 {
+        color: #ffd700 !important;
+    }
+    .sidebar-header p {
+        color: #ffb3d9 !important;
+    }
+    /* Contador de mensagens */
+    .message-counter {
+        color: #ffd700 !important;
+        font-weight: bold;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -347,7 +356,7 @@ class CTAEngine:
         if heat_level < 80:
             return {
                 "text": random.choice([
-                    f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho umas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
+                    f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho unas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
                     f"Nossa, com essa conversa eu já tô {random.choice(['molhadinha', 'com tesão', 'pronta pra você'])}... Quer ver? 😈 Tenho conteúdo exclusivo no VIP...",
                     f"Adoro quando você fala assim... {random.choice(['Quer ver o que isso me causa?', 'Tenho uns vídeos que mostram exatamente o que você tá provocando...'])} 😈 Só no VIP!"
                 ]),
@@ -569,7 +578,7 @@ class UiService:
     @staticmethod
     def get_chat_audio_player():
         return f"""
-        <div style="background: linear-gradient(45deg, #7e5bef, #9d4edd); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(126, 91, 239, 0.3);">
+        <div style="background: linear-gradient(45deg, #8B0000, #450000); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);">
             <audio controls style="width:100%; height:35px; filter: invert(0.9) sepia(1) saturate(7) hue-rotate(300deg);">
                 <source src="{Config.AUDIO_FILE}" type="audio/mp3">
             </audio>
@@ -661,11 +670,17 @@ class UiService:
     @staticmethod
     def setup_sidebar():
         with st.sidebar:
-            # Container de fundo para a sidebar
-            st.markdown('<div class="sidebar-container"></div>', unsafe_allow_html=True)
+            # Container simplificado SEM sobreposição
+            st.markdown(
+                '<div class="sidebar-container">'
+                f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.LOGO_URL}" width="80%"></div>'
+                f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.IMG_PROFILE}" width="60%" style="border-radius:50%; border: 2px solid #ffd700;"></div>'
+                '<h3 style="color: #ffd700; text-align:center; margin-top:0;">Nicole Saheb Premium VIP</h3>'
+                '<p style="color: #ffb3d9; text-align:center; font-size:0.9em;">Sua musa particular...</p>'
+                '</div>',
+                unsafe_allow_html=True
+            )
             
-            st.markdown(f'<div class="sidebar-logo-container"><img src="{Config.LOGO_URL}" class="sidebar-logo" alt="Logo"></div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Nicole"><h3 style="color: #7e5bef; margin-top: 15px;">Nicole Saheb Premium VIP</h3><p style="font-size: 0.9em; color: #d0c1ff;">Sua musa particular...</p></div>', unsafe_allow_html=True)
             st.markdown("---")
             menu_options = {"Início Quente": "home", "Minha Galeria Privada": "gallery", "Chat Íntimo": "chat", "Ofertas Exclusivas": "offers"}
             for option, page in menu_options.items():
@@ -678,12 +693,12 @@ class UiService:
             
             # Indicador de calor na sidebar
             heat_level = st.session_state.get('heat_level', 0)
-            heat_color = "#7e5bef" if heat_level < 60 else "#ff6b6b" if heat_level < 80 else "#ff0000"
+            heat_color = "#ffd700" if heat_level < 60 else "#ff6b6b" if heat_level < 80 else "#ff0000"
             
             st.markdown(f"""
-            <div style="background: rgba(126, 91, 239, 0.15); padding: 12px; border-radius: 10px; 
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 10px; 
                         text-align: center; margin-bottom: 15px; border: 1px solid {heat_color};">
-                <p style="margin:0; color: #d0c1ff;">Nível de Conexão:</p>
+                <p style="margin:0; color: #ffd700;">Nível de Conexão:</p>
                 <div style="background: linear-gradient(90deg, {heat_color} 0%, {heat_color} {heat_level}%, #333 {heat_level}%, #333 100%); 
                             height: 10px; border-radius: 5px; margin: 8px 0;"></div>
                 <p style="margin:0; color: {heat_color}; font-weight: bold; font-size: 1.1em;">
@@ -692,7 +707,15 @@ class UiService:
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown(f'<div style="background: rgba(126, 91, 239, 0.15); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #7e5bef;"><p style="margin:0; color: #d0c1ff;">Mensagens hoje: <strong>{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p><progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:8px;"></progress></div>', unsafe_allow_html=True)
+            # Contador de mensagens com melhor contraste
+            st.markdown(
+                f'<div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #ffd700;">'
+                f'<p style="margin:0; color: #ffb3d9;">Mensagens hoje: <strong class="message-counter">{st.session_state.request_count}/{Config.MAX_REQUESTS_PER_SESSION}</strong></p>'
+                f'<progress value="{st.session_state.request_count}" max="{Config.MAX_REQUESTS_PER_SESSION}" style="width:100%; height:8px; accent-color: #ffd700;"></progress>'
+                '</div>',
+                unsafe_allow_html=True
+            )
+            
             if st.button("QUERO SER VIP AGORA!", use_container_width=True, type="primary", key="sidebar_cta_button"):
                 st.session_state.current_page = "offers"
                 save_persistent_data()
@@ -712,7 +735,8 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #ffd700;">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
+        # Título com melhor contraste
+        st.markdown('<h2 style="text-align: center; color: #ffd700; text-shadow: 0 0 5px rgba(0,0,0,0.5);">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
