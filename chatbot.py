@@ -44,7 +44,7 @@ st.markdown("""
     .stApp {
         margin: 0 !important;
         padding: 0 !important;
-        background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 100%);
+        background: linear-gradient(180deg, #8B0000 0%, #450000 100%) !important; /* Vermelho sangue */
         color: #f0e6ff;
     }
     /* Estilos globais para botões de CTA primários */
@@ -110,10 +110,22 @@ st.markdown("""
         background: rgba(126, 91, 239, 0.15) !important;
         border-left: 3px solid #ff66b3 !important;
     }
-    /* Sidebar */
+    /* Sidebar - Roxo escuro */
     .st-emotion-cache-6qob1r {
-        background: rgba(26, 10, 46, 0.85) !important;
+        background: #1a0033 !important;
         backdrop-filter: blur(5px) !important;
+    }
+    /* Container da sidebar */
+    .sidebar-container {
+        background: linear-gradient(to bottom, #1a0033, #2d1b4e);
+        padding: 20px;
+        border-radius: 0 15px 15px 0;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -613,8 +625,8 @@ class UiService:
         """Mostra o status 'Digitando...' com tempo aleatório e efeito visual"""
         container = st.empty()
         
-        # Tempo total mais variado (1.5 a 4.5 segundos)
-        total_time = random.uniform(1.5, 4.5)
+        # Tempo total mais natural (2.0 a 5.0 segundos)
+        total_time = random.uniform(2.0, 5.0)
         start_time = time.time()
         
         while time.time() - start_time < total_time:
@@ -649,6 +661,9 @@ class UiService:
     @staticmethod
     def setup_sidebar():
         with st.sidebar:
+            # Container de fundo para a sidebar
+            st.markdown('<div class="sidebar-container"></div>', unsafe_allow_html=True)
+            
             st.markdown(f'<div class="sidebar-logo-container"><img src="{Config.LOGO_URL}" class="sidebar-logo" alt="Logo"></div>', unsafe_allow_html=True)
             st.markdown(f'<div class="sidebar-header"><img src="{Config.IMG_PROFILE}" alt="Nicole"><h3 style="color: #7e5bef; margin-top: 15px;">Nicole Saheb Premium VIP</h3><p style="font-size: 0.9em; color: #d0c1ff;">Sua musa particular...</p></div>', unsafe_allow_html=True)
             st.markdown("---")
@@ -697,7 +712,7 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        st.markdown('<h2 style="text-align: center; color: #7e5bef;">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="text-align: center; color: #ffd700;">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -708,8 +723,8 @@ class NewPages:
     @staticmethod
     def show_home_page():
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a0a2e, #2d1b4e); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #ff6b6b;">
-            <h1 style="color: #7e5bef; font-size: 3.5em;">Nicole Saheb 💖</h1>
+        <div style="background: linear-gradient(135deg, #8B0000, #450000); padding: 60px 20px; text-align: center; border-radius: 20px; color: white; margin-bottom: 40px; border: 3px solid #ff6b6b;">
+            <h1 style="color: #ffd700; font-size: 3.5em;">Nicole Saheb 💖</h1>
             <p style="font-size: 1.4em;">Descubra o prazer de um bom conteúdo quente, exclusivo e sem censura.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -735,9 +750,9 @@ class NewPages:
             offer_msg = "Você me deixou com MUITO tesão... escolha seu pacote e vamos continuar isso no VIP! 😈💦"
         
         st.markdown(f"""
-        <div style="text-align: center; padding: 20px; background: rgba(126, 91, 239, 0.15); 
+        <div style="text-align: center; padding: 20px; background: rgba(139, 0, 0, 0.3); 
                     border-radius: 15px; margin-bottom: 30px; border: 2px solid #ff6b6b;">
-            <h2 style="color: #7e5bef;">Acesse e não se arrependerá! 😈</h2>
+            <h2 style="color: #ffd700;">Acesse e não se arrependerá! 😈</h2>
             <p>{offer_msg}</p>
             <p>Qual é o tamanho do seu pacote?</p>
         </div>
@@ -755,7 +770,7 @@ class NewPages:
             with col:
                 pkg = packages[i]
                 st.markdown(f"""
-                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(26, 10, 46, 0.7);">
+                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(139, 0, 0, 0.3);">
                     <div style="margin-bottom: 15px;">
                         <h3 style="color: {pkg['color']}; margin: 0;">{pkg['name']}</h3>
                         <div style="font-size: 1.8em; font-weight: bold; color: {pkg['color']};">{pkg['price']}</div>
@@ -771,7 +786,7 @@ class NewPages:
         st.markdown("""
         <div style="border: 2px solid #ffb347; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
             <h4 style="color: #ffb347; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
-            <p style="margin: 5px 0 10px;">Quem comprar o pacote extreme hoje ganha:</p>
+            <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
                 <li>Video pessoal exclusivo</li>
                 <li>Chamada de 5 minutos comigo</li>
@@ -936,7 +951,7 @@ class ChatService:
             typing_time = UiService.show_typing_status()
             
             # Tempo adicional de "pensamento" baseado no contexto
-            extra_thinking_time = random.uniform(0.5, 1.5)
+            extra_thinking_time = random.uniform(0.2, 1.0)
             time.sleep(extra_thinking_time)
             
             # Aumentar variação de tempo de resposta
@@ -1002,7 +1017,7 @@ def main():
     if not st.session_state.chat_started and st.session_state.current_page == 'chat':
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #ff6b6b;"><h2 style="color: #7e5bef;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center; margin: 50px 0;"><img src="{Config.IMG_PROFILE}" width="150" style="border-radius: 50%; border: 5px solid #ff6b6b;"><h2 style="color: #ffd700;">Pronto para se perder comigo, amor? 😉</h2></div>', unsafe_allow_html=True)
             if st.button("CONVERSAR COM NICOLE AGORA! 🔥", type="primary", use_container_width=True, key="start_chat_button"):
                 st.session_state.update({'chat_started': True, 'current_page': 'chat', 'audio_sent': False})
                 save_persistent_data()
