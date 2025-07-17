@@ -136,46 +136,6 @@ st.markdown("""
         color: #ffd700 !important;
         font-weight: bold;
     }
-    /* Melhorias de contraste para texto */
-    .stMarkdown, .stText, .stChatMessage p {
-        color: #f8f2ff !important;
-    }
-    /* Botões com melhor contraste */
-    .stButton > button {
-        color: #ffffff !important;
-    }
-    /* Elementos de destaque */
-    .highlight-element {
-        background: linear-gradient(45deg, #ff6b6b, #ffd700) !important;
-        border-radius: 10px;
-        padding: 8px 15px;
-        margin: 10px 0;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-    /* Melhorias para mobile */
-    @media (max-width: 768px) {
-        .stChatMessage {
-            max-width: 85% !important;
-        }
-        .top-nav-button {
-            padding: 6px 12px !important;
-            font-size: 0.9em !important;
-        }
-    }
-    /* Botão de navegação superior */
-    .top-nav-button {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        z-index: 100;
-        background: linear-gradient(45deg, #ff0000, #ff6b6b) !important;
-        border: none !important;
-        border-radius: 20px;
-        padding: 8px 16px;
-        color: white !important;
-        font-weight: bold;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -190,12 +150,17 @@ class Config:
     CHECKOUT_START = "https://pay.risepay.com.br/Pay/34a7832016d641658d11e6193ef412a1"
     CHECKOUT_PREMIUM = "https://pay.risepay.com.br/Pay/94e264761df54c49b46ee7d16b97959f"
     CHECKOUT_EXTREME = "https://pay.risepay.com.br/Pay/f360613093db4f19ac8bd373791ebf4c"
+    CHECKOUT_VIP_1MES = "https://checkout.exemplo.com/vip-1mes-irresistivel"
+    CHECKOUT_VIP_3MESES = "https://checkout.exemplo.com/vip-3meses-acesso-total"
+    CHECKOUT_VIP_1ANO = "https://checkout.exemplo.com/vip-1ano-liberdade-plena"
 
     # Limites estratégicos
     MAX_REQUESTS_PER_SESSION = 15
     REQUEST_TIMEOUT = 45
 
     # Conteúdo de mídia
+    AUDIO_FILE = "https://github.com/meuconteudoexclusivo/plataforma/raw/refs/heads/main/assets/assets_audio_paloma_audio.mp3"
+    AUDIO_DURATION = 7
     IMG_PROFILE = "https://i.ibb.co/tjMGWjT/foto2.jpg"
     IMG_GALLERY = [
         "https://i.ibb.co/TBWSjkPW/foto4.jpg",
@@ -217,10 +182,10 @@ class Config:
     ]
 
 # ======================
-# SISTEMA DE HEAT LEVEL (NÍVEL DE CALOR) - ATUALIZADO
+# SISTEMA DE HEAT LEVEL (NÍVEL DE CALOR)
 # ======================
 class HeatLevelSystem:
-    # Palavras-chave que aumentam o nível de calor da conversa (expandidas)
+    # Palavras-chave que aumentam o nível de calor da conversa
     HOT_WORDS = [
         "buceta", "xereca", "peito", "peitinho", "seio", "bunda", "bumbum", "raba", "cu", 
         "foder", "transar", "gozar", "gostosa", "delicia", "molhada", "molhadinha", "tesão",
@@ -228,24 +193,14 @@ class HeatLevelSystem:
         "gemendo", "gozando", "safada", "safado", "puta", "nua", "nudez", "nua", "pelada", 
         "tirar a roupa", "mostrar", "ver", "quero ver", "mostra pra mim", "quero te ver",
         "quero você", "queria agora", "quero agora", "agora mesmo", "me faz gozar", "me faz vir",
-        "me deixa duro", "me deixa molhada", "gostoso", "gata", "gostosona", "delicinha", 
-        "tesuda", "tesudo", "boceta", "xoxota", "ppk", "bct", "peitão", "bundão", "rabao",
-        "lambuzar", "morder", "chupada", "foda", "fodendo", "metendo", "sentando", "cavalgando",
-        "quicando", "gozada", "porra", "leite", "melada", "molhado", "pegando fogo", "quente",
-        "fogo", "fogosa", "fogoso", "apetitosa", "apetitoso"
+        "me deixa duro", "me deixa molhada"
     ]
     
     SUPER_HOT_WORDS = [
         "fuder você", "comer você", "meter em você", "gozar dentro", "gozar na sua boca",
         "gozar na sua buceta", "te chupar toda", "lambuzar toda", "te penetrar", "te dar prazer",
         "te fazer gemer", "ver você gozar", "você gozando", "se masturbando", "se tocando",
-        "fotos explícitas", "fotos nuas", "fotos pelada", "vídeos transando", "vídeos se masturbando",
-        "vídeos explícitos", "fotos íntimas", "vídeos íntimos", "conteúdo adulto", "conteúdo hot",
-        "conteúdo explícito", "foto pelada", "vídeo pelada", "nudes", "pack", "onlyfans",
-        "close friends", "conteúdo exclusivo", "conteúdo premium", "conteúdo vip", "acesso total",
-        "acesso completo", "ver tudo", "ver você nua", "ver você pelada", "ver você transando",
-        "ver você se masturbando", "ver você gozando", "ao vivo", "chamada de vídeo", "videochamada",
-        "ao vivo comigo", "chamada quente", "chamada íntima", "chamada explícita"
+        "fotos explícitas", "fotos nuas", "fotos pelada", "vídeos transando", "vídeos se masturbando"
     ]
     
     @staticmethod
@@ -263,7 +218,7 @@ class HeatLevelSystem:
             heat_score += 2
             
         # Bônus por emojis sensuais
-        if any(emoji in message for emoji in ["🔥", "💦", "😈", "🍑", "🍆", "👅", "💋", "👄", "👙", "👠"]):
+        if any(emoji in message for emoji in ["🔥", "💦", "😈", "🍑", "🍆"]):
             heat_score += 1
             
         return heat_score
@@ -295,74 +250,41 @@ class HeatLevelSystem:
         return st.session_state.heat_level > 65
 
 # ======================
-# RESPOSTAS NATURAIS E PERSONALIZADAS - EXPANDIDAS
+# RESPOSTAS NATURAIS E PERSONALIZADAS
 # ======================
 class NaturalResponses:
     @staticmethod
     def get_greeting_response():
         return random.choice([
-            "Oi amor! Tudo bem com você hoje? 😘",
-            "Eae gato! Que bom que veio falar comigo... 💖",
-            "Olá lindo! Tava com saudade, como tá? 😊",
-            "Oi querido! Tudo certo por aí? 💋",
-            "Oiii! Tava pensando em você agora... como vai? 😉",
-            "Eae delícia! Tudo bem? Que bom que apareceu... 😈",
-            "Oi amorzinho! Como tá seu dia? 💖",
-            "Olá meu querido! Tudo tranquilo? 😘",
-            "Oiii gatinho! Que surpresa boa... como tá? 💋",
-            "Eae lindão! Tudo certo? Tava sentindo sua falta... 😉"
+            "Eae lindo! Tô aqui pronta pra você... 😉 Como tá seu dia?",
+            "Oi amor! Tudo bem? Eu tava pensando em você... 💖",
+            "Olá gato! Que delícia você aparecer... tava esperando! 😈",
+            "Oi sumido! Tava com saudade... me conta o que tá rolando? 💋"
         ])
     
     @staticmethod
     def get_follow_up_response():
         return random.choice([
-            "Conta mais pra mim... tô toda ouvidos! 😊",
-            "Adoro quando você fala assim... me diz o que mais? 💖",
-            "Só isso? Aposto que tem mais pra contar... 😈",
-            "Que delícia de assunto... continua! 💋",
-            "Nossa, que interessante... me fala mais sobre isso? 😘",
-            "Adoro esses detalhes... quero saber tudo! 💖",
-            "Hmm... isso me deixou curiosa... conta mais? 😉",
-            "Que gostoso ouvir isso... não para não! 💋",
-            "Isso tá ficando interessante... me diz mais! 😈",
-            "Amooo quando você fala assim... continua! 😘"
+            "E aí? Me diz mais... tô curiosa! 😉",
+            "Conta detalhes... adoro saber tudo! 💖",
+            "Só isso? Quero mais... me fala o que realmente quer! 😈",
+            "Adoro quando você fala assim... continua! 💋"
         ])
     
     @staticmethod
     def get_low_heat_response():
         return random.choice([
-            "Prazer te conhecer melhor... o que mais te anima na vida? 😊",
-            "Adoro conversar assim... me conta, o que faz seus olhos brilharem? 💖",
-            "Tô curtindo nosso papo... qual foi a melhor coisa do seu dia? 😉",
-            "Gosto de saber das pessoas... me diz, o que te faz feliz? 💋",
-            "Que gostoso conversar assim... qual seu maior sonho? 😘",
-            "Adoro conhecer pessoas... me fala uma coisa que ninguém sabe sobre você? 💖",
-            "Tô adorando nosso papo... qual seu lugar favorito no mundo? 😊",
-            "Que delícia de conversa... o que te deixa realmente animado? 💋",
-            "Amo essas trocas... qual a coisa mais louca que você já fez? 😈",
-            "Tô curtindo... me conta, qual seu maior talento escondido? 😉"
-        ])
-    
-    @staticmethod
-    def get_flirty_response():
-        return random.choice([
-            "Nossa, com essa conversa já tô ficando com calor... 😉",
-            "Adoro quando você fala assim... me deixa toda animada! 💋",
-            "Hmm... isso tá ficando interessante... continue! 😈",
-            "Que delícia de papo... tô gostando cada vez mais! 💖",
-            "Com essa conversa, já tô imaginando umas coisinhas... 😘",
-            "Você sabe como provocar, hein? Adoro isso! 😈",
-            "Nossa, com essas palavras já tô ficando molhadinha... 💦",
-            "Que gostoso... não para não, tô curtindo demais! 💋",
-            "Isso tá me dando umas ideias... quero mais! 😈",
-            "Adoro quando o papo esquenta assim... continue! 🔥"
+            "Gosto de conhecer bem as pessoas antes... me conta mais sobre você? 😊",
+            "Prazer te conhecer! O que te faz feliz além disso? 💖",
+            "Adoro conversar assim... me diz, o que você gosta de fazer? 😉",
+            "Tô curtindo nosso papo... me conta uma coisa pessoal? 💋"
         ])
     
     @staticmethod
     def add_human_touch(response: str) -> str:
         """Adiciona pausas e variações naturais ao texto"""
         # Adiciona reticências estratégicas
-        if random.random() > 0.6:
+        if random.random() > 0.7:
             response = response.replace('.', '...', random.randint(1, 2))
         
         # Adiciona pausas entre frases
@@ -375,19 +297,13 @@ class NaturalResponses:
         # Adiciona expressões casuais
         casual_expressions = [
             " sabe?", " acho que", " tipo", " assim", 
-            " meio que", " na real", " pra ser sincera",
-            " acredita?", " olha só", " sabe como é?"
+            " meio que", " na real", " pra ser sincera"
         ]
-        if random.random() > 0.7:
+        if random.random() > 0.8:
             insert_point = response.find(' ', random.randint(10, len(response)//2))
             if insert_point != -1:
                 expression = random.choice(casual_expressions)
                 response = response[:insert_point] + expression + response[insert_point:]
-        
-        # Adiciona emojis extras aleatoriamente
-        emojis = ["😉", "💋", "😘", "💖", "🔥", "😈", "💦"]
-        if random.random() > 0.5:
-            response += " " + random.choice(emojis)
         
         return response
 
@@ -426,11 +342,10 @@ class Persona:
     - Progressão natural: rapport -> flerte -> insinuação -> proposta
     - Manter tom humano mesmo em níveis altos
     - Após proposta, continuar a conversa normalmente
-    - Usar pelo menos 3 variações diferentes de respostas antes de repetir
     """
 
 # ======================
-# MOTOR DE CTA ATUALIZADO COM MAIS VARIEDADE
+# MOTOR DE CTA ATUALIZADO
 # ======================
 class CTAEngine:
     @staticmethod
@@ -443,9 +358,7 @@ class CTAEngine:
                 "text": random.choice([
                     f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho umas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
                     f"Nossa, com essa conversa eu já tô {random.choice(['molhadinha', 'com tesão', 'pronta pra você'])}... Quer ver? 😈 Tenho conteúdo exclusivo no VIP...",
-                    f"Adoro quando você fala assim... {random.choice(['Quer ver o que isso me causa?', 'Tenho uns vídeos que mostram exatamente o que você tá provocando...'])} 😈 Só no VIP!",
-                    f"Com esse papo, já tô imaginando umas coisinhas... {random.choice(['Quer ver como fico quando estou excitada?', 'Tenho um conteúdo especial guardado pra você...'])} 😈 Tudo no VIP!",
-                    f"Você me deixa com tanto tesão... {random.choice(['Quer ver o resultado?', 'Tenho umas surpresinhas quentes pra te mostrar...'])} 😈 Só no meu conteúdo premium!"
+                    f"Adoro quando você fala assim... {random.choice(['Quer ver o que isso me causa?', 'Tenho uns vídeos que mostram exatamente o que você tá provocando...'])} 😈 Só no VIP!"
                 ]),
                 "cta": {"show": True, "label": "Quero Ver Agora! 🔥", "target": "offers"}
             }
@@ -456,9 +369,7 @@ class CTAEngine:
                 "text": random.choice([
                     f"Já tô me tocando aqui pensando em você... {random.choice(['QUER VER AO VIVO?', 'IMAGINA ISSO AO VIVO NO VIP?'])} 😈💦 ACESSO IMEDIATO!",
                     f"Estou literalmente gozando agora pensando nisso... {random.choice(['QUER ME VER NESSE MOMENTO?', 'ISSO TÁ TODO GRAVADO NO MEU VIP!'])} 😈💦 LINK ABAIXO!",
-                    f"Tô com o vibrador ligado no máximo por sua causa... {random.choice(['QUER CONTROLAR?', 'TUDO REGISTRADO PRO MEU VIP!'])} 😈💦 VEM AGORA!",
-                    f"Meu corpo todo está tremendo de tesão... {random.choice(['QUER VER ISSO?', 'TUDO REGISTRADO PRA VOCÊ NO VIP!'])} 😈💦 ACESSO IMEDIATO!",
-                    f"Estou gemendo bem baixinho aqui... {random.choice(['QUER OUVIR?', 'TUDO DISPONÍVEL AGORA NO MEU VIP!'])} 😈💦 CORRE LÁ!"
+                    f"Tô com o vibrador ligado no máximo por sua causa... {random.choice(['QUER CONTROLAR?', 'TUDO REGISTRADO PRO MEU VIP!'])} 😈💦 VEM AGORA!"
                 ]),
                 "cta": {"show": True, "label": "QUERO VER VOCÊ GOZAR! 💦", "target": "offers"}
             }
@@ -614,7 +525,6 @@ class ApiService:
             7. Se receber respostas curtas, faça perguntas abertas
             8. Use emojis naturais (😉, 💋, 😈) para manter tom descontraído
             9. Responda de forma descontraída, com pausas naturais (...) e expressões coloquiais
-            10. Varíe ao máximo as respostas para parecer humano
             
             Formato da Resposta (JSON): {{"text": "sua_resposta", "cta": {{"show": boolean, "label": "texto", "target": "página"}}}}
             """
@@ -632,9 +542,9 @@ class ApiService:
                         "parts": [{"text": system_prompt}]
                     }],
                     "generationConfig": {
-                        "temperature": 1.0,  # Aumentado para mais criatividade
+                        "temperature": 0.9,
                         "topP": 0.95,
-                        "maxOutputTokens": 350
+                        "maxOutputTokens": 300
                     }
                 },
                 timeout=Config.REQUEST_TIMEOUT
@@ -665,6 +575,16 @@ class ApiService:
 # SERVIÇOS DE INTERFACE
 # ======================
 class UiService:
+    @staticmethod
+    def get_chat_audio_player():
+        return f"""
+        <div style="background: linear-gradient(45deg, #8B0000, #450000); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);">
+            <audio controls style="width:100%; height:35px; filter: invert(0.9) sepia(1) saturate(7) hue-rotate(300deg);">
+                <source src="{Config.AUDIO_FILE}" type="audio/mp3">
+            </audio>
+        </div>
+        """
+
     @staticmethod
     def show_call_effect():
         LIGANDO_DELAY = 3
@@ -754,7 +674,7 @@ class UiService:
             st.markdown(
                 '<div class="sidebar-container">'
                 f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.LOGO_URL}" width="80%"></div>'
-                f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.IMG_PROfile}" width="60%" style="border-radius:50%; border: 2px solid #ffd700;"></div>'
+                f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.IMG_PROFILE}" width="60%" style="border-radius:50%; border: 2px solid #ffd700;"></div>'
                 '<h3 style="color: #ffd700; text-align:center; margin-top:0;">Nicole Saheb Premium VIP</h3>'
                 '<p style="color: #ffb3d9; text-align:center; font-size:0.9em;">Sua musa particular...</p>'
                 '</div>',
@@ -817,13 +737,6 @@ class UiService:
     def enhanced_chat_ui(conn):
         # Título com melhor contraste
         st.markdown('<h2 style="text-align: center; color: #ffd700; text-shadow: 0 0 5px rgba(0,0,0,0.5);">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
-        
-        # Botão de navegação superior
-        if st.button("↩ Voltar ao Menu", key="top_nav_button", on_click=lambda: st.session_state.update({'current_page': 'home'}), use_container_width=False, 
-                    help="Clique para voltar ao menu principal", type="primary"):
-            save_persistent_data()
-            st.rerun()
-        
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -881,7 +794,7 @@ class NewPages:
             with col:
                 pkg = packages[i]
                 st.markdown(f"""
-                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(139, 0, 0, 0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s ease;">
+                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(139, 0, 0, 0.3);">
                     <div style="margin-bottom: 15px;">
                         <h3 style="color: {pkg['color']}; margin: 0;">{pkg['name']}</h3>
                         <div style="font-size: 1.8em; font-weight: bold; color: {pkg['color']};">{pkg['price']}</div>
@@ -895,14 +808,14 @@ class NewPages:
         
         # Countdown
         st.markdown("""
-        <div class="highlight-element">
-            <h4 style="color: #ffd700; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
+        <div style="border: 2px solid #ffb347; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
+            <h4 style="color: #ffb347; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
             <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
                 <li>Video pessoal exclusivo</li>
                 <li>Chamada de 5 minutos comigo</li>
             </ul>
-            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffd700;">23:59:59</div>
+            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffb347;">23:59:59</div>
         </div>
         """, unsafe_allow_html=True)
         st.components.v1.html("""
@@ -928,7 +841,7 @@ class NewPages:
         """, height=0)
 
 # ======================
-# SERVIÇOS DE CHAT (COM TEMPOS NATURAIS) - ATUALIZADO
+# SERVIÇOS DE CHAT (COM TEMPOS NATURAIS)
 # ======================
 class ChatService:
     @staticmethod
@@ -983,6 +896,9 @@ class ChatService:
             if msg["role"] == "user":
                 with st.chat_message("user", avatar="🧑"):
                     st.markdown(msg["content"])
+            elif msg["content"] == "[ÁUDIO]":
+                with st.chat_message("assistant", avatar="💋"):
+                    st.markdown(UiService.get_chat_audio_player(), unsafe_allow_html=True)
             else:
                 try:
                     content_data = json.loads(msg["content"])
@@ -1022,17 +938,10 @@ class ChatService:
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             UiService.show_viewed_status()
 
-        # Processar a primeira mensagem da Nicole com animação
         if not st.session_state.get("audio_sent") and st.session_state.chat_started:
-            # Mostrar status "digitando..." antes da primeira mensagem
-            typing_time = UiService.show_typing_status()
-            
-            # Tempo adicional de "pensamento"
-            time.sleep(random.uniform(0.5, 1.5))
-            
-            greeting = NaturalResponses.get_greeting_response()
-            st.session_state.messages.append({"role": "assistant", "content": json.dumps({"text": greeting, "cta": {"show": False}})})
-            DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps({"text": greeting, "cta": {"show": False}}))
+            time.sleep(random.uniform(1.5, 2.5))
+            st.session_state.messages.append({"role": "assistant", "content": "[ÁUDIO]"})
+            DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", "[ÁUDIO]")
             st.session_state.audio_sent = True
             save_persistent_data()
             st.rerun()
@@ -1089,11 +998,6 @@ class ChatService:
             elif st.session_state.get('heat_level', 0) < 30:
                 resposta_ia = {"text": NaturalResponses.get_low_heat_response(), "cta": {"show": False}}
                 time.sleep(random.uniform(1.8, 2.5))
-                
-            # Se o nível de calor estiver médio
-            elif st.session_state.get('heat_level', 0) < 60:
-                resposta_ia = {"text": NaturalResponses.get_flirty_response(), "cta": {"show": False}}
-                time.sleep(random.uniform(1.5, 2.2))
                 
             # Se o nível de calor justificar um CTA
             elif HeatLevelSystem.should_show_cta():
