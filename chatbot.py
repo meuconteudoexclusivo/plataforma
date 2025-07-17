@@ -344,7 +344,7 @@ class NaturalResponses:
             " sabe?", " acho que", " tipo", " assim", 
             " meio que", " na real", " pra ser sincera"
         ]
-        if random.random() > 0.8:
+        if random.random() > 0.7:
             insert_point = response.find(' ', random.randint(10, len(response)//2))
             if insert_point != -1:
                 expression = random.choice(casual_expressions)
@@ -405,7 +405,7 @@ class CTAEngine:
         heat_level = st.session_state.get('heat_level', 0)
         
         # CTA para níveis altos (60-80)
-        if heat_level < 80:
+        if heat_level < 40:
             return {
                 "text": random.choice([
                     f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho umas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
