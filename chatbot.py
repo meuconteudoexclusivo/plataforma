@@ -772,19 +772,41 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        # Botão fixo para pacotes VIP
+        # Botão fixo para pacotes VIP - AGORA FUNCIONAL!
         st.markdown("""
-        <div style="position: sticky; top: 0; z-index: 100; background: rgba(26, 0, 51, 0.8); backdrop-filter: blur(5px); padding: 10px; border-radius: 0 0 15px 15px; margin-bottom: 20px; text-align: center;">
-            <a href="#offers" style="text-decoration: none;">
-                <button style="background: linear-gradient(90deg, #ffb347, #ff6b6b, #9d4edd); color: #1A0033; border: none; border-radius: 30px; padding: 8px 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;">
-                    🔥 Ver Pacotes VIP
-                </button>
-            </a>
+        <div style="position: sticky; top: 0; z-index: 100; background: rgba(26, 0, 51, 0.8); 
+                    backdrop-filter: blur(5px); padding: 10px; border-radius: 0 0 15px 15px; 
+                    margin-bottom: 20px; text-align: center;">
+            <button onclick="redirectToOffers()" 
+                    style="background: linear-gradient(90deg, #ffb347, #ff6b6b, #9d4edd); 
+                           color: #1A0033; border: none; border-radius: 30px; padding: 8px 20px; 
+                           font-weight: bold; font-size: 0.9em; cursor: pointer; 
+                           transition: all 0.3s ease; width: 100%;">
+                🔥 Ver Pacotes VIP
+            </button>
         </div>
+        <script>
+        function redirectToOffers() {
+            // Comunica com o Streamlit para mudar de página
+            window.parent.postMessage({
+                type: 'streamlit:setComponentValue',
+                value: 'go_to_offers'
+            }, '*');
+        }
+        </script>
         """, unsafe_allow_html=True)
         
         # Título com melhor contraste
         st.markdown('<h2 style="text-align: center; color: #ffd700; text-shadow: 0 0 5px rgba(0,0,0,0.5);">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
+        
+        # Verifica se o botão foi clicado
+        if 'go_to_offers' in st.session_state:
+            if st.session_state.go_to_offers:
+                st.session_state.current_page = "offers"
+                st.session_state.go_to_offers = False
+                save_persistent_data()
+                st.rerun()
+        
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -909,7 +931,8 @@ class ChatService:
             'current_page': 'home', 
             'last_cta_time': 0, 
             'last_error_time': 0,
-            'heat_level': 0
+            'heat_level': 0,
+            'go_to_offers': False  # Novo estado para controle do botão
         }
         for key, default in defaults.items():
             if key not in st.session_state:
@@ -1084,6 +1107,30 @@ def main():
         save_persistent_data()
         st.rerun()
         
+    # Componente para capturar clique do botão VIP
+    if 'go_to_offers' not in st.session_state:
+        st.session_state.go_to_offers = False
+    
+    # Componente invisível para comunicação JavaScript
+    st.markdown("""
+    <script>
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'streamlit:setComponentValue') {
+            if (event.data.value === 'go_to_offers') {
+                // Atualiza o estado do Streamlit
+                Streamlit.setComponentValue('offer_clicked');
+            }
+        }
+    });
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # Captura o evento do botão
+    offer_clicked = st.empty()
+    if offer_clicked.button("offer_clicked", key="offer_clicked_btn", visible=False):
+        st.session_state.go_to_offers = True
+        st.rerun()
+    
     if not st.session_state.chat_started and st.session_state.current_page == 'chat':
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
