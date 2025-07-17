@@ -190,9 +190,16 @@ class Config:
 
     # Respostas de fallback
     FALLBACK_RESPONSES = [
-        "Eae lindo! Tava aqui me arrumando toda pra você... 😉",
-        "Hmm... isso é bem excitante hein 💋",
-        "Eu adoro ler isso... vamos continuar? 😉"
+        "Eae gato! Tava aqui pensando na gente... 😉",
+        "Hmm... isso me deixa com vontade de te mostrar mais 💋",
+        "Adoro quando você fala assim... me conta o que você faria? 😈",
+        "Nossa, que delícia de mensagem... continuando? 🔥",
+        "Já tô imaginando... você me deixa louca! 💖",
+        "Quero saber mais... me descreve melhor? 😉",
+        "Isso me lembra quando... 💭 conta mais!",
+        "Tô ficando molhadinha com isso... e você? 😈",
+        "Meu corpo todo arrepiou... adoro esse papo! 💋",
+        "Só isso? Tenho certeza que você tem mais pra me contar... 😏"
     ]
 
 # ======================
@@ -207,14 +214,19 @@ class HeatLevelSystem:
         "gemendo", "gozando", "safada", "safado", "puta", "nua", "nudez", "nua", "pelada", 
         "tirar a roupa", "mostrar", "ver", "quero ver", "mostra pra mim", "quero te ver",
         "quero você", "queria agora", "quero agora", "agora mesmo", "me faz gozar", "me faz vir",
-        "me deixa duro", "me deixa molhada"
+        "me deixa duro", "me deixa molhada", "gostosa", "delícia", "molhada", "tesão", "foder", 
+        "chupar", "lambida", "bucetinha", "peitinhos", "rabão", "gostoso", "gata", "sexo", 
+        "prazer", "desejo", "vontade", "quente", "fogo", "chama", "loucura", "vem cá"
     ]
     
     SUPER_HOT_WORDS = [
         "fuder você", "comer você", "meter em você", "gozar dentro", "gozar na sua boca",
         "gozar na sua buceta", "te chupar toda", "lambuzar toda", "te penetrar", "te dar prazer",
         "te fazer gemer", "ver você gozar", "você gozando", "se masturbando", "se tocando",
-        "fotos explícitas", "fotos nuas", "fotos pelada", "vídeos transando", "vídeos se masturbando"
+        "fotos explícitas", "fotos nuas", "fotos pelada", "vídeos transando", "vídeos se masturbando",
+        "me come", "me fode", "goza em mim", "buceta molhadinha", "quero te chupar", "me domina", 
+        "sou todo seu", "faz eu gemer", "tô durão", "tô com tesão", "me faz gozar", "tô molhadinha",
+        "quero seu pau", "sentar em você", "engolir seu leite"
     ]
     
     @staticmethod
@@ -297,6 +309,25 @@ class NaturalResponses:
     @staticmethod
     def add_human_touch(response: str) -> str:
         """Adiciona pausas e variações naturais ao texto"""
+        # Garante que não repetirá respostas idênticas
+        if 'last_responses' not in st.session_state:
+            st.session_state.last_responses = []
+        
+        if response in st.session_state.last_responses:
+            # Reescreve a resposta mantendo o sentido
+            synonyms = {
+                "adoro": ["amo", "curto", "gosto demais"],
+                "gato": ["gostoso", "delícia", "lindo"],
+                "vamos": ["bora", "vem", "que tal"]
+            }
+            for word, options in synonyms.items():
+                if word in response.lower():
+                    response = response.replace(word, random.choice(options))
+                    break
+                    
+        # Mantém apenas as últimas 5 respostas na memória
+        st.session_state.last_responses = [response] + st.session_state.last_responses[:4]
+        
         # Adiciona reticências estratégicas
         if random.random() > 0.7:
             response = response.replace('.', '...', random.randint(1, 2))
@@ -356,6 +387,13 @@ class Persona:
     - Progressão natural: rapport -> flerte -> insinuação -> proposta
     - Manter tom humano mesmo em níveis altos
     - Após proposta, continuar a conversa normalmente
+    
+    [PERFIL ATUALIZADO]
+    - Inicia sempre com elogios naturais: "Eae gato!", "Oi amor!"
+    - Usa expressões corporais: "Tô me mordendo aqui...", "Meu corpo todo arrepiou"
+    - Respostas mais afirmativas que interrogativas
+    - Transições suaves para o VIP: "Isso me lembra um conteúdo especial que tenho..."
+    - Mantém tom íntimo sem ser robótico
     """
 
 # ======================
@@ -575,13 +613,8 @@ class ApiService:
 
         except Exception as e:
             print(f"Erro na API: {str(e)}")
-            fallbacks = [
-                f"Eae lindo! Tô aqui me arrumando toda pra você... 😉 {random.choice(['Me conta mais', 'Só isso? Eu sei que você tem mais pra dizer... 😈', 'Você me deixa louca'])} 😈",
-                f"{random.choice(['Hmm', 'Ah', 'Nossa'])}... {random.choice(['isso é bem excitante', 'você sabe provocar', 'Já pensou se a gente transforma esses elogios em algo real? 😉'])} 💋",
-                f"Eu adoro quando você fala assim... {random.choice(['vamos continuar?', 'quer me ver mais?', 'me diz o que você faria'])} 😉"
-            ]
             return {
-                "text": random.choice(fallbacks),
+                "text": random.choice(Config.FALLBACK_RESPONSES),
                 "cta": {"show": False}
             }
 
@@ -739,6 +772,17 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
+        # Botão fixo para pacotes VIP
+        st.markdown("""
+        <div style="position: sticky; top: 0; z-index: 100; background: rgba(26, 0, 51, 0.8); backdrop-filter: blur(5px); padding: 10px; border-radius: 0 0 15px 15px; margin-bottom: 20px; text-align: center;">
+            <a href="#offers" style="text-decoration: none;">
+                <button style="background: linear-gradient(90deg, #ffb347, #ff6b6b, #9d4edd); color: #1A0033; border: none; border-radius: 30px; padding: 8px 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;">
+                    🔥 Ver Pacotes VIP
+                </button>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Título com melhor contraste
         st.markdown('<h2 style="text-align: center; color: #ffd700; text-shadow: 0 0 5px rgba(0,0,0,0.5);">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         ChatService.process_user_input(conn)
