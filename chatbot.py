@@ -152,38 +152,29 @@ st.markdown("""
         margin: 10px 0;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
-    /* Botão flutuante para mobile */
-    .floating-button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(45deg, #ff0000, #ff6b6b);
-        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
-        color: white;
-        font-size: 1.5em;
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
     /* Melhorias para mobile */
     @media (max-width: 768px) {
         .stChatMessage {
             max-width: 85% !important;
         }
-        .floating-button {
-            bottom: 70px;
-            right: 15px;
+        .top-nav-button {
+            padding: 6px 12px !important;
+            font-size: 0.9em !important;
         }
+    }
+    /* Botão de navegação superior */
+    .top-nav-button {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 100;
+        background: linear-gradient(45deg, #ff0000, #ff6b6b) !important;
+        border: none !important;
+        border-radius: 20px;
+        padding: 8px 16px;
+        color: white !important;
+        font-weight: bold;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -199,9 +190,6 @@ class Config:
     CHECKOUT_START = "https://pay.risepay.com.br/Pay/34a7832016d641658d11e6193ef412a1"
     CHECKOUT_PREMIUM = "https://pay.risepay.com.br/Pay/94e264761df54c49b46ee7d16b97959f"
     CHECKOUT_EXTREME = "https://pay.risepay.com.br/Pay/f360613093db4f19ac8bd373791ebf4c"
-    CHECKOUT_VIP_1MES = "https://checkout.exemplo.com/vip-1mes-irresistivel"
-    CHECKOUT_VIP_3MESES = "https://checkout.exemplo.com/vip-3meses-acesso-total"
-    CHECKOUT_VIP_1ANO = "https://checkout.exemplo.com/vip-1ano-liberdade-plena"
 
     # Limites estratégicos
     MAX_REQUESTS_PER_SESSION = 15
@@ -766,7 +754,7 @@ class UiService:
             st.markdown(
                 '<div class="sidebar-container">'
                 f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.LOGO_URL}" width="80%"></div>'
-                f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.IMG_PROFILE}" width="60%" style="border-radius:50%; border: 2px solid #ffd700;"></div>'
+                f'<div style="text-align:center; margin-bottom:20px;"><img src="{Config.IMG_PROfile}" width="60%" style="border-radius:50%; border: 2px solid #ffd700;"></div>'
                 '<h3 style="color: #ffd700; text-align:center; margin-top:0;">Nicole Saheb Premium VIP</h3>'
                 '<p style="color: #ffb3d9; text-align:center; font-size:0.9em;">Sua musa particular...</p>'
                 '</div>',
@@ -830,24 +818,11 @@ class UiService:
         # Título com melhor contraste
         st.markdown('<h2 style="text-align: center; color: #ffd700; text-shadow: 0 0 5px rgba(0,0,0,0.5);">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
         
-        # Botão flutuante para mobile (acesso rápido aos pacotes)
-        st.markdown(
-            """
-            <div class="floating-button" onclick="parent.window.location.href='?current_page=offers'">
-                💎
-            </div>
-            <script>
-                // Forçar atualização ao clicar
-                document.querySelector('.floating-button').addEventListener('click', function() {
-                    window.parent.postMessage({
-                        type: 'streamlit:setComponentValue',
-                        value: 'offers_clicked'
-                    }, '*');
-                });
-            </script>
-            """,
-            unsafe_allow_html=True
-        )
+        # Botão de navegação superior
+        if st.button("↩ Voltar ao Menu", key="top_nav_button", on_click=lambda: st.session_state.update({'current_page': 'home'}), use_container_width=False, 
+                    help="Clique para voltar ao menu principal", type="primary"):
+            save_persistent_data()
+            st.rerun()
         
         ChatService.process_user_input(conn)
         save_persistent_data()
@@ -1047,9 +1022,15 @@ class ChatService:
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             UiService.show_viewed_status()
 
-        # Substitui o áudio inicial por mensagem textual
+        # Processar a primeira mensagem da Nicole com animação
         if not st.session_state.get("audio_sent") and st.session_state.chat_started:
-            greeting = "Oi, tudo bem? 😉"
+            # Mostrar status "digitando..." antes da primeira mensagem
+            typing_time = UiService.show_typing_status()
+            
+            # Tempo adicional de "pensamento"
+            time.sleep(random.uniform(0.5, 1.5))
+            
+            greeting = NaturalResponses.get_greeting_response()
             st.session_state.messages.append({"role": "assistant", "content": json.dumps({"text": greeting, "cta": {"show": False}})})
             DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps({"text": greeting, "cta": {"show": False}}))
             st.session_state.audio_sent = True
