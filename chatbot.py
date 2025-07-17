@@ -136,6 +136,22 @@ st.markdown("""
         color: #ffd700 !important;
         font-weight: bold;
     }
+    /* Melhorias de contraste para texto */
+    .stMarkdown, .stText, .stChatMessage p {
+        color: #f8f2ff !important;
+    }
+    /* Botões com melhor contraste */
+    .stButton > button {
+        color: #ffffff !important;
+    }
+    /* Elementos de destaque */
+    .highlight-element {
+        background: linear-gradient(45deg, #ff6b6b, #ffd700) !important;
+        border-radius: 10px;
+        padding: 8px 15px;
+        margin: 10px 0;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -159,8 +175,6 @@ class Config:
     REQUEST_TIMEOUT = 45
 
     # Conteúdo de mídia
-    AUDIO_FILE = "https://github.com/meuconteudoexclusivo/plataforma/raw/refs/heads/main/assets/assets_audio_paloma_audio.mp3"
-    AUDIO_DURATION = 7
     IMG_PROFILE = "https://i.ibb.co/tjMGWjT/foto2.jpg"
     IMG_GALLERY = [
         "https://i.ibb.co/TBWSjkPW/foto4.jpg",
@@ -256,7 +270,7 @@ class NaturalResponses:
     @staticmethod
     def get_greeting_response():
         return random.choice([
-            "Eae lindo! Tô aqui pronta pra você... 😉 Como tá seu dia?",
+            "Oi, tudo bem? 😉 Como tá seu dia?",
             "Oi amor! Tudo bem? Eu tava pensando em você... 💖",
             "Olá gato! Que delícia você aparecer... tava esperando! 😈",
             "Oi sumido! Tava com saudade... me conta o que tá rolando? 💋"
@@ -576,16 +590,6 @@ class ApiService:
 # ======================
 class UiService:
     @staticmethod
-    def get_chat_audio_player():
-        return f"""
-        <div style="background: linear-gradient(45deg, #8B0000, #450000); border-radius: 18px; padding: 10px; margin: 5px 0; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);">
-            <audio controls style="width:100%; height:35px; filter: invert(0.9) sepia(1) saturate(7) hue-rotate(300deg);">
-                <source src="{Config.AUDIO_FILE}" type="audio/mp3">
-            </audio>
-        </div>
-        """
-
-    @staticmethod
     def show_call_effect():
         LIGANDO_DELAY = 3
         ATENDIDA_DELAY = 2
@@ -794,7 +798,7 @@ class NewPages:
             with col:
                 pkg = packages[i]
                 st.markdown(f"""
-                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(139, 0, 0, 0.3);">
+                <div style="border: 2px solid {pkg['color']}; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 20px; background: rgba(139, 0, 0, 0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s ease;">
                     <div style="margin-bottom: 15px;">
                         <h3 style="color: {pkg['color']}; margin: 0;">{pkg['name']}</h3>
                         <div style="font-size: 1.8em; font-weight: bold; color: {pkg['color']};">{pkg['price']}</div>
@@ -808,14 +812,14 @@ class NewPages:
         
         # Countdown
         st.markdown("""
-        <div style="border: 2px solid #ffb347; border-radius: 10px; padding: 15px; text-align: center; margin: 20px 0;">
-            <h4 style="color: #ffb347; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
+        <div class="highlight-element">
+            <h4 style="color: #ffd700; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
             <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
                 <li>Video pessoal exclusivo</li>
                 <li>Chamada de 5 minutos comigo</li>
             </ul>
-            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffb347;">23:59:59</div>
+            <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffd700;">23:59:59</div>
         </div>
         """, unsafe_allow_html=True)
         st.components.v1.html("""
@@ -896,9 +900,6 @@ class ChatService:
             if msg["role"] == "user":
                 with st.chat_message("user", avatar="🧑"):
                     st.markdown(msg["content"])
-            elif msg["content"] == "[ÁUDIO]":
-                with st.chat_message("assistant", avatar="💋"):
-                    st.markdown(UiService.get_chat_audio_player(), unsafe_allow_html=True)
             else:
                 try:
                     content_data = json.loads(msg["content"])
@@ -938,10 +939,11 @@ class ChatService:
         if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
             UiService.show_viewed_status()
 
+        # Substitui o áudio inicial por mensagem textual
         if not st.session_state.get("audio_sent") and st.session_state.chat_started:
-            time.sleep(random.uniform(1.5, 2.5))
-            st.session_state.messages.append({"role": "assistant", "content": "[ÁUDIO]"})
-            DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", "[ÁUDIO]")
+            greeting = "Oi, tudo bem? 😉"
+            st.session_state.messages.append({"role": "assistant", "content": json.dumps({"text": greeting, "cta": {"show": False}})})
+            DatabaseService.save_message(conn, get_user_id(), st.session_state.session_id, "assistant", json.dumps({"text": greeting, "cta": {"show": False}}))
             st.session_state.audio_sent = True
             save_persistent_data()
             st.rerun()
