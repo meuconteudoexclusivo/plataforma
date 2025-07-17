@@ -300,10 +300,10 @@ class NaturalResponses:
     @staticmethod
     def get_low_heat_response():
         return random.choice([
-            "Gosto de conhecer bem as pessoas antes... me conta mais sobre você? 😊",
-            "Prazer te conhecer! O que te faz feliz além disso? 💖",
-            "Adoro conversar assim... me diz, o que você gosta de fazer? 😉",
-            "Tô curtindo nosso papo... me conta uma coisa pessoal? 💋"
+            "Gosto de conhecer bem as pessoas antes... me conta mais sobre vc! 😊",
+            "Prazer te conhecer! quero entrar no video com vc.... 💖",
+            "Adoro conversar assim... me diz, o que você gosta de fazer comigo no video? 😉",
+            "Tô curtindo nosso papo... vamos pro video? 💋"
         ])
     
     @staticmethod
@@ -858,10 +858,10 @@ class NewPages:
         st.markdown("""
         <div class="highlight-element">
             <h4 style="color: #ffd700; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
-            <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
+            <p style="margin: 5px 0 10px;">Se você comprar agora o PREMIUM E EXTREME ganha:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
-                <li>Video pessoal exclusivo</li>
-                <li>Chamada de 5 minutos comigo</li>
+                <li>Video pessoal exclusivo personalizado</li>
+                <li>Chamada de 5 minutos comigo no whatsapp agora mesmo</li>
             </ul>
             <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffd700;">23:59:59</div>
         </div>
