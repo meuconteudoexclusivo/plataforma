@@ -152,26 +152,6 @@ st.markdown("""
         margin: 10px 0;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
-    /* Botão flutuante de menu */
-    .floating-menu-btn {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        z-index: 1000;
-        background: linear-gradient(90deg, #ff6b6b, #9d4edd);
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        transition: all 0.3s ease;
-    }
-    .floating-menu-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -320,10 +300,10 @@ class NaturalResponses:
     @staticmethod
     def get_low_heat_response():
         return random.choice([
-            "Gosto de conhecer bem as pessoas antes... me conta mais sobre você? 😊",
-            "Prazer te conhecer! O que te faz feliz além disso? 💖",
-            "Adoro conversar assim... me diz, o que você gosta de fazer? 😉",
-            "Tô curtindo nosso papo... me conta uma coisa pessoal? 💋"
+            "Gosto de conhecer bem as pessoas antes... me conta mais sobre vc! 😊",
+            "Prazer te conhecer! quero entrar no video com vc.... 💖",
+            "Adoro conversar assim... me diz, o que você gosta de fazer comigo no video? 😉",
+            "Tô curtindo nosso papo... vamos pro video? 💋"
         ])
     
     @staticmethod
@@ -364,7 +344,7 @@ class NaturalResponses:
             " sabe?", " acho que", " tipo", " assim", 
             " meio que", " na real", " pra ser sincera"
         ]
-        if random.random() > 0.8:
+        if random.random() > 0.7:
             insert_point = response.find(' ', random.randint(10, len(response)//2))
             if insert_point != -1:
                 expression = random.choice(casual_expressions)
@@ -408,7 +388,7 @@ class Persona:
     - Manter tom humano mesmo em níveis altos
     - Após proposta, continuar a conversa normalmente
     
-    [PERFIL ATUALIZADA]
+    [PERFIL ATUALIZADO]
     - Inicia sempre com elogios naturais: "Eae gato!", "Oi amor!"
     - Usa expressões corporais: "Tô me mordendo aqui...", "Meu corpo todo arrepiou"
     - Respostas mais afirmativas que interrogativas
@@ -425,7 +405,7 @@ class CTAEngine:
         heat_level = st.session_state.get('heat_level', 0)
         
         # CTA para níveis altos (60-80)
-        if heat_level < 80:
+        if heat_level < 40:
             return {
                 "text": random.choice([
                     f"Estou ficando tão excitada com você... {random.choice(['Quer ver como fico quando penso em você?', 'Tenho umas fotos bem pessoais que mostram meu tesão...'])} 😈 Tudo no meu VIP!",
@@ -515,8 +495,7 @@ def save_persistent_data():
         'age_verified', 'messages', 'request_count',
         'connection_complete', 'chat_started', 'audio_sent',
         'current_page', 'show_vip_offer', 'session_id',
-        'last_cta_time', 'last_error_time', 'heat_level',
-        'show_menu_sidebar'  # Novo estado para controle do menu
+        'last_cta_time', 'last_error_time', 'heat_level'
     ]
     new_data = {key: st.session_state.get(key) for key in persistent_keys if key in st.session_state}
     saved_data = db.load_state(user_id) or {}
@@ -793,16 +772,19 @@ class UiService:
 
     @staticmethod
     def enhanced_chat_ui(conn):
-        # Botão flutuante de menu
+        # Botão fixo para pacotes VIP
         st.markdown("""
-        <button class="floating-menu-btn" onclick="window.parent.postMessage({type: 'streamlit:setComponentValue', value: 'show_menu'}, '*')">
-            ☰ Menu
-        </button>
+        <div style="position: sticky; top: 0; z-index: 100; background: rgba(26, 0, 51, 0.8); backdrop-filter: blur(5px); padding: 10px; border-radius: 0 0 15px 15px; margin-bottom: 20px; text-align: center;">
+            <a href="#offers" style="text-decoration: none;">
+                <button style="background: linear-gradient(90deg, #ffb347, #ff6b6b, #9d4edd); color: #1A0033; border: none; border-radius: 30px; padding: 8px 20px; font-weight: bold; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;">
+                    🔥 Ver Pacotes VIP
+                </button>
+            </a>
+        </div>
         """, unsafe_allow_html=True)
         
         # Título com melhor contraste
         st.markdown('<h2 style="text-align: center; color: #ffd700; text-shadow: 0 0 5px rgba(0,0,0,0.5);">Chat Exclusivo com Nicole 💖</h2>', unsafe_allow_html=True)
-        
         ChatService.process_user_input(conn)
         save_persistent_data()
 
@@ -876,10 +858,10 @@ class NewPages:
         st.markdown("""
         <div class="highlight-element">
             <h4 style="color: #ffd700; margin: 0;">🚨 OFERTA RELÂMPAGO! 🚨</h4>
-            <p style="margin: 5px 0 10px;">Os primeiros 10 compradores hoje ganham:</p>
+            <p style="margin: 5px 0 10px;">Se você comprar agora o PREMIUM E EXTREME ganha:</p>
             <ul style="text-align: left; margin-bottom: 15px;">
-                <li>Video pessoal exclusivo</li>
-                <li>Chamada de 5 minutos comigo</li>
+                <li>Video pessoal exclusivo personalizado</li>
+                <li>Chamada de 5 minutos comigo no whatsapp agora mesmo</li>
             </ul>
             <div id="countdown" style="font-size: 1.5em; font-weight: bold; color: #ffd700;">23:59:59</div>
         </div>
@@ -927,8 +909,7 @@ class ChatService:
             'current_page': 'home', 
             'last_cta_time': 0, 
             'last_error_time': 0,
-            'heat_level': 0,
-            'show_menu_sidebar': False
+            'heat_level': 0
         }
         for key, default in defaults.items():
             if key not in st.session_state:
@@ -1095,47 +1076,7 @@ def main():
         UiService.age_verification()
         st.stop()
         
-    # Componente para capturar clique do botão de menu
-    st.markdown("""
-    <script>
-    window.addEventListener('message', (event) => {
-        if (event.data.type === 'streamlit:setComponentValue' && event.data.value === 'show_menu') {
-            Streamlit.setComponentValue('menu_clicked');
-        }
-    });
-    </script>
-    """, unsafe_allow_html=True)
-    
-    # Captura o evento do botão de menu
-    menu_clicked = st.empty()
-    if menu_clicked.button("menu_clicked", key="menu_clicked_btn", visible=False):
-        st.session_state.show_menu_sidebar = True
-        st.rerun()
-    
-    # Exibe menu lateral quando solicitado
-    if st.session_state.get('show_menu_sidebar', False):
-        with st.sidebar:
-            st.markdown("## 🔥 Menu de Navegação")
-            pages = {
-                "Início Quente": "home",
-                "Minha Galeria Privada": "gallery",
-                "Chat Íntimo": "chat",
-                "Ofertas Exclusivas": "offers"
-            }
-            
-            for page_name, page_id in pages.items():
-                if st.button(page_name, use_container_width=True, key=f"menu_{page_id}"):
-                    st.session_state.current_page = page_id
-                    st.session_state.show_menu_sidebar = False
-                    st.rerun()
-            
-            st.markdown("---")
-            if st.button("Fechar Menu", use_container_width=True, key="close_menu_button"):
-                st.session_state.show_menu_sidebar = False
-                st.rerun()
-    else:
-        # Sidebar normal quando o menu não está aberto
-        UiService.setup_sidebar()
+    UiService.setup_sidebar()
     
     if not st.session_state.connection_complete:
         UiService.show_call_effect()
